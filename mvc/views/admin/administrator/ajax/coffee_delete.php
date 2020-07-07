@@ -1,0 +1,1 @@
+<div>Đã xóa một quán Coffee</div>

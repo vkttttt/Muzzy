@@ -1,0 +1,32 @@
+.contact {
+  .col-md-3 {
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+    background-color: #ff9b00;
+    padding: 4%;
+    color: #242424;
+    .contact-title {
+      .icon {
+        font-size: 4rem;
+        color: #fff;
+      }
+    }
+  }
+  .col-md-9 {
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+    background-color: #fff;
+    padding: 2%;
+    box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.17);
+    .contact-form {
+      label {
+        font-weight: 600;
+        font-size: 1rem;
+      }
+      #btn-send-mail {
+        width: 25% !important;
+      }
+  
+    }
+  }
+}

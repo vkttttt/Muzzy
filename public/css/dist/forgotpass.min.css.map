@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,IAAI,AAAC,CACH,MAAM,CAAE,IAAI,CACZ,UAAU,CAAE,wCAAwC,CAAC,SAAS,CAAC,MAAM,CAAC,MAAM,CAAC,KAAK,CAClF,gBAAgB,CAAC,OAAO,CACxB,gBAAgB,CAAE,2CAA2C,CAC9D,AACD,AACE,WADS,CACT,IAAI,CADN,WAAW,CACH,KAAK,AAAC,CACV,aAAa,CAAE,iBAAiB,CACjC",
+    "sources": [
+        "../../scss/forgotpass.scss"
+    ],
+    "names": [],
+    "file": "forgotpass.min.css"
+}

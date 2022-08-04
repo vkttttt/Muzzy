@@ -1,0 +1,249 @@
+var fs = require('fs'), path = require('path'), util = require('util'),mv = require('mv'), Stream = require('stream').Stream;
+
+module.exports = resumable = function (temporaryFolder) {
+    var $ = this;
+    $.temporaryFolder = temporaryFolder;
+
+    //create folder tmp
+    fs.access($.temporaryFolder, fs.constants.F_OK, (err) => {
+        if (err){
+            //no such file or folder
+            if(err.code == 'ENOENT'){
+                fs.mkdir($.temporaryFolder, { recursive: true }, (err) => {
+                    if (err) console.log('fs.mkdir',err);//err mkdir
+                });
+            } else {
+                console.log('fs.access',err);
+            }
+        }
+    });
+
+    $.maxFileSize = null;
+    $.fileParameterName = 'file';
+
+    var cleanIdentifier = function (identifier) {
+        return identifier.replace(/^0-9A-Za-z_-/img, '');
+    };
+
+    var getChunkFilename = function (chunkNumber, identifier) {
+        // Clean up the identifier
+        identifier = cleanIdentifier(identifier);
+        // What would the file name be?
+        return path.join($.temporaryFolder, './resumable-' + identifier + '.' + chunkNumber);
+    };
+
+    var validateRequest = function (chunkNumber, chunkSize, totalSize, identifier, filename, fileSize) {
+        // Clean up the identifier
+        identifier = cleanIdentifier(identifier);
+
+        // Check if the request is sane
+        if (chunkNumber == 0 || chunkSize == 0 || totalSize == 0 || identifier.length == 0 || filename.length == 0) {
+            return 'non_resumable_request';
+        }
+        var numberOfChunks = Math.max(Math.floor(totalSize / (chunkSize * 1.0)), 1);
+        if (chunkNumber > numberOfChunks) {
+            return 'invalid_resumable_request1';
+        }
+
+        // Is the file too big?
+        if ($.maxFileSize && totalSize > $.maxFileSize) {
+            return 'invalid_resumable_request2';
+        }
+
+        if (typeof (fileSize) != 'undefined') {
+            if (chunkNumber < numberOfChunks && fileSize != chunkSize) {
+                // The chunk in the POST request isn't the correct size
+                return 'invalid_resumable_request3';
+            }
+            if (numberOfChunks > 1 && chunkNumber == numberOfChunks && fileSize != ((totalSize % chunkSize) + chunkSize)) {
+                // The chunks in the POST is the last one, and the fil is not the correct size
+                return 'invalid_resumable_request4';
+            }
+            if (numberOfChunks == 1 && fileSize != totalSize) {
+                // The file is only a single chunk, and the data size does not fit
+                return 'invalid_resumable_request5';
+            }
+        }
+
+        return 'valid';
+    };
+
+    //'found', filename, original_filename, identifier
+    //'not_found', null, null, null
+    $.get = function (req, callback) {
+        var chunkNumber = req.param('resumableChunkNumber', 0);
+        var chunkSize = req.param('resumableChunkSize', 0);
+        var totalSize = req.param('resumableTotalSize', 0);
+        var identifier = req.param('resumableIdentifier', "");
+        var filename = req.param('resumableFilename', "");
+
+        if (validateRequest(chunkNumber, chunkSize, totalSize, identifier, filename) == 'valid') {
+            var chunkFilename = getChunkFilename(chunkNumber, identifier);
+            fs.exists(chunkFilename, function (exists) {
+                if (exists) {
+                    callback('found', chunkFilename, filename, identifier, chunkNumber);
+                } else {
+                    callback('not_found', null, null, null, 0);
+                }
+            });
+        } else {
+            callback('not_found', null, null, null, 0);
+        }
+    }
+
+    //'partly_done', filename, original_filename, identifier
+    //'done', filename, original_filename, identifier
+    //'invalid_resumable_request', null, null, null
+    //'non_resumable_request', null, null, null
+    $.post = function (req, callback) {
+        var fields = req.body;
+        var files = req.files;
+        var chunkNumber = fields['resumableChunkNumber'];
+        var chunkSize = fields['resumableChunkSize'];
+        var totalSize = fields['resumableTotalSize'];
+        var identifier = cleanIdentifier(fields['resumableIdentifier']);
+        var filename = fields['resumableFilename'];
+
+        var original_filename = fields['resumableIdentifier'];
+
+        if (!files[$.fileParameterName] || !files[$.fileParameterName].size) {
+            callback('invalid_resumable_request', null, null, null, 0);
+            return;
+        }
+        var validation = validateRequest(chunkNumber, chunkSize, totalSize, identifier, files[$.fileParameterName].size);
+        if (validation == 'valid') {
+            var chunkFilename = getChunkFilename(chunkNumber, identifier);
+            //return;
+            //console.log(chunkFilename, 'chunkFilename')
+            // Save the chunk (TODO: OVERWRITE)
+
+            mv(files[$.fileParameterName].path, chunkFilename, function (err) {
+                // done. it tried fs.rename first, and then falls back to
+                // piping the source file to the dest file and then unlinking
+                // the source file.
+                // });
+
+                // fs.rename(files[$.fileParameterName].path, chunkFilename, function (err) {
+                if (err) {
+                    console.log(err);
+                    return callback('error_mv', null, null, null, 0);
+                }
+                //return;
+                // Do we have all the chunks?
+                var currentTestChunk = 1;
+                var numberOfChunks = Math.max(Math.floor(totalSize / (chunkSize * 1.0)), 1);
+                var testChunkExists = function () {
+                    fs.exists(getChunkFilename(currentTestChunk, identifier), function (exists) {
+                        if (exists) {
+                            currentTestChunk++;
+                            if (currentTestChunk > numberOfChunks) {
+                                callback('done', filename, original_filename, identifier, numberOfChunks);
+                            } else {
+                                // Recursion
+                                // console.log('oko');
+                                testChunkExists();
+                            }
+                        } else {
+                            // console.log('oko111111');
+                            callback('partly_done', filename, original_filename, identifier, currentTestChunk);
+                        }
+                    });
+                };
+                testChunkExists();
+            });
+        } else {
+            callback(validation, filename, original_filename, identifier, 0);
+        }
+    };
+
+
+    // Pipe chunks directly in to an existsing WritableStream
+    //   r.write(identifier, response);
+    //   r.write(identifier, response, {end:false});
+    //
+    //   var stream = fs.createWriteStream(filename);
+    //   r.write(identifier, stream);
+    //   stream.on('data', function(data){...});
+    //   stream.on('end', function(){...});
+    $.write = function (identifier, file_path, callback) {
+        var write_error = 0;
+        var writableStream = fs.createWriteStream(file_path);
+        writableStream.on('error', function (err) {
+            writableStream.end();
+            write_error = 1;
+            console.log('createWriteStream',err);
+            return callback(false);
+        });
+
+        // Iterate over each chunk
+
+        var pipeChunk = function (number) {
+            if(number > 999){
+                return callback(false);
+            }
+
+            var chunkFilename = getChunkFilename(number, identifier);
+            fs.access(chunkFilename, fs.constants.F_OK, (err) => {
+                if(err === null){
+                    if(write_error == 1){return;}
+
+                    // If the chunk with the current number exists,
+                    // then create a ReadStream from the file
+                    // and pipe it to the specified writableStream.
+                    var sourceStream = fs.createReadStream(chunkFilename);
+                    sourceStream.pipe(writableStream, {
+                        end: false
+                    });
+
+                    sourceStream.on('error', function () {
+                        callback(false);
+                    });
+
+                    sourceStream.on('end', function () {
+                        // When the chunk is fully streamed, jump to the next one
+                        pipeChunk(number + 1);
+                    });
+                } else {
+                    if(err.code != 'ENOENT'){console.log('err',err);}
+                    // When all the chunks have been piped, end the stream
+                    writableStream.end();
+                    callback(true);
+                    //if (options.onDone) options.onDone();
+                }
+            });
+        };
+        pipeChunk(1);
+    };
+
+
+    $.clean = function (identifier, options) {
+        options = options || {};
+
+        // Iterate over each chunk
+        var pipeChunkRm = function (number) {
+
+            var chunkFilename = getChunkFilename(number, identifier);
+
+            //console.log('removing pipeChunkRm ', number, 'chunkFilename', chunkFilename);
+            fs.exists(chunkFilename, function (exists) {
+                if (exists) {
+
+                    // console.log('exist removing ', chunkFilename);
+                    fs.unlink(chunkFilename, function (err) {
+                        if (err && options.onError) options.onError(err);
+                    });
+
+                    pipeChunkRm(number + 1);
+
+                } else {
+
+                    if (options.onDone) options.onDone();
+
+                }
+            });
+        }
+        pipeChunkRm(1);
+    }
+
+    return $;
+}

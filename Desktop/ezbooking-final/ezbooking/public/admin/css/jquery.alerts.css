@@ -1,0 +1,99 @@
+/*
+//
+// Tip: to integrate this plugin seamlessly into your application, use these styles as a starting
+// point to build your own stylish alerts and confirmations!
+//
+*/
+
+/* Modal */
+.alertable {
+    position: fixed;
+    z-index: 9999;
+    top: 38vh;
+    left: calc(50% - 150px);
+    width: 300px;
+    background: white;
+    border-radius: 4px;
+    padding: 20px;
+    margin: 0 auto;
+}
+
+/* Overlay */
+.alertable-overlay {
+    position: fixed;
+    z-index: 9998;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0, 0, 0, .5);
+}
+
+/* Message */
+.alertable-message {
+    margin-bottom: 20px;
+    font-size: 1.2em;
+    text-align: center;
+}
+
+/* Prompt */
+.alertable-prompt {
+    margin-bottom: 20px;
+}
+
+.alertable-input {
+    width: 100%;
+    border-radius: 4px;
+    box-shadow: none;
+    border: solid 1px #ccc;
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    padding: 6px 12px;
+    display: block;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+/* Button group */
+.alertable-buttons {
+    text-align: center;
+}
+
+/* OK button */
+.alertable-ok {
+    border: solid 1px #00c0ef;
+    border-radius: 1px;
+    background: #00c0ef;
+    font-family: inherit;
+    font-size: inherit;
+    color: #fff;
+    padding: 6px 32px;
+    margin-left: 8px;
+    cursor: pointer;
+}
+.alertable-ok:active,
+.alertable-ok:focus,
+.alertable-ok:hover{
+    background-color: #269abc;
+    border-color: #269abc;
+}
+
+/* Cancel button */
+.alertable-cancel {
+    border: solid 1px #ddd;
+    background: #f2f2f2;
+    font-family: inherit;
+    font-size: inherit;
+    color: #000;
+    border-radius: 1px;
+    padding: 6px 32px;
+    margin-left: 8px;
+    cursor: pointer;
+}
+
+.alertable-cancel:hover,
+.alertable-cancel:focus,
+.alertable-cancel:active {
+    background-color: #ddd;
+}

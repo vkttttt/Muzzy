@@ -1,0 +1,298 @@
+<% layout('../../layout/admin'); %>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.6.2/dist/chart.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/public/admin/css/chartjs.css">
+
+<!--- Content Header (Page header) 
+<section class="content-header form-inline">
+    <h1>Daily Entered Codes By Region<small><a href=""><i class="fa fa-reply"></i></a></small></h1>
+    <ol class="breadcrumb">
+        <li><a href=""><i class="fa fa-dashboard"></i> Dashboard</a></li>
+        <li class="active"><%=mod_alias%></li>
+    </ol>
+</section>
+--->
+<div class="clearfix"></div>
+<section class="content-header">
+    <form class="form-inline">
+        <div class="form-group">
+            <input type="text" name="from_date" id="from_date" value="<%=helpers.admin.get_query_data(query_get,'from_date')%>" class="form-control datepicker" placeholder="From date">
+            <input type="text" name="to_date" id="to_date" value="<%=helpers.admin.get_query_data(query_get,'to_date')%>" class="form-control datepicker" placeholder="To date">
+        </div>
+        <button type="submit" id ="get-report" class="btn btn-primary get-report">Filter</button>
+    </form>
+</section>
+
+<!-- Main content -->
+
+<%
+var arr_color = ['aqua','green','blue','olive','teal','purple'];
+var bg_color = arr_color[Math.floor(Math.random()*arr_color.length)];
+%>
+
+<!-- Main content -->
+
+<section class="content">
+    <h1>Thống kê đơn đặt bàn của nhà hàng</h1>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="box">
+            	<div class="content">
+            		<div class="chart">
+                        <canvas id="myChart" width="300" height="300"></canvas>
+                        <input type="hidden" id ="approve" value="<%=data.approve%>">
+                        <input type="hidden" id ="reject" value="<%=data.reject%>">
+                        <input type="hidden" id ="cancel" value="<%=data.cancel%>">
+                        <input type="hidden" id ="success" value="<%=data.success%>">
+            		</div>
+				</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="box">
+            	<div class="content">
+            		<div class="chart">
+                        <% if(order_data_per_branch){ %>
+                            <%order_data_per_branch.forEach(function(child){ %>
+                                    <div class="col-lg-3 col-xs-6">
+                                        <!-- <a href="<%=_baseUrl%>ezbooking/statistics/reportdetail/<%=child._id%>"> -->
+                                            <div class="small-box bg-<%=bg_color%>">
+                                                <div class="inner">
+                                                    <h4>Chi nhánh: <%=child.name%></h4>
+                                                    <p>Tổng đơn đặt hàng: <%=child.total%></p>
+                                                    <p>Tổng đơn đặt hàng thành công: <%=child.approve%></p>
+                                                    <p>Tổng đơn đặt hàng thất bại: <%=child.reject%></p>
+                                                    <p>Tổng đơn đặt hàng bị hủy: <%=child.cancel%></p>
+                                                    <p>Tổng đơn đặt hàng đã hoàn thành: <%=child.success%></p>
+                                                    <br>
+                                                </div>
+                                            </div>
+                                        <!-- </a> -->
+                                    </div>
+                            <% }); %>
+                        <% } %>
+            		</div>
+				</div>
+            </div>
+        </div>
+    </div>
+
+    <h1>Thống kê người dùng của nhà hàng</h1>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="box">
+            	<div class="content">
+            		<div class="chart">
+                        <% if(order_data_per_branch){ %>
+                            <%order_data_per_branch.forEach(function(child){ %>
+                                    <div class="col-lg-3 col-xs-6">
+                                        <a href="<%=_baseUrl%>ezbooking/statistics/<%=child._id%>">
+                                            <div class="small-box bg-<%=bg_color%>">
+                                                <div class="inner">
+                                                    <h4><%=child.name%></h4>
+                                                    <p>Lượng người dùng đặt bàn: <%=child.num_of_user%></p>
+                                                    <br>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                            <% }); %>
+                        <% } %>
+            		</div>
+				</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    const ctx = document.getElementById('myChart');
+    var from_date = document.getElementById('from_date').value;
+    var to_date = document.getElementById('to_date').value;
+    label = from_date + ' - ' + to_date;
+    const labels = [label];
+    var approve = parseInt(document.getElementById('approve').value);
+    var reject = parseInt(document.getElementById('reject').value);
+    var cancel = parseInt(document.getElementById('cancel').value);
+    var success = parseInt(document.getElementById('success').value);
+    const data = {
+        labels: labels,
+        datasets: [
+        {
+            label: 'Tổng đơn đặt hàng thành công',
+            data: [approve],
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor:'rgba(75, 192, 192, 1)',
+            borderWidth: 1,
+            stack: 'Stack 0'
+        },
+        {
+            label: 'Tổng đơn đặt hàng bị hủy',
+            data: [cancel],
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor:'rgba(255, 99, 132, 1)',
+            borderWidth: 1,
+            stack: 'Stack 1'
+        },
+        {
+            label: 'Tổng đơn đặt hàng thất bại',
+            data: [reject],
+            backgroundColor: 'rgba(255, 159, 64, 0.2)',
+            borderColor:'rgba(255, 159, 64, 1)',
+            borderWidth: 1,
+            stack: 'Stack 2'
+        },
+        {
+            label: 'Tổng đơn đặt hàng đã hoàn thành',
+            data: [success],
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor:'rgba(54, 162, 235, 1)',
+            borderWidth: 1,
+            stack: 'Stack 3'
+        },
+        ]
+    };
+    
+    const actions = [
+        {
+        name: 'Randomize',
+        handler(chart) {
+            chart.data.datasets[0].data = [40, 50, 15];
+            chart.data.datasets[1].data = [27, 34, 10];
+            chart.data.datasets[2].data = [13, 16, 5];
+            chart.update();
+        }
+        },
+    ];
+    const config = {
+        type: 'bar',
+        data: data,
+        options: {
+        responsive: true,
+        plugins: {
+            legend: {
+            position: 'top',
+            },
+            title: {
+            display: true,
+            text: 'Thống kê đơn đặt bàn'
+            }
+        }
+        },
+    };
+    
+    const myChart = new Chart(ctx,config,actions);
+</script>
+
+<script>
+	$(document).ready(function(){
+		$('.get-report').on('click',function(){
+            get_data();
+        });
+        //Init
+        get_data();
+	});
+
+    function get_data(){
+        var report_type = $('select[name="report_type"]').val();
+        var report_date = $('input[name="from_date"]').val();
+        Admin.loading_show();
+        $j.ajax({
+            type: 'POST',
+            url :  base_url+'api/acecook/get_daily_entered_by_region',
+            data : {
+                report_type : report_type,
+                report_date: report_date,
+                '_csrf' : token_value
+            },
+            success: function(res){
+                Admin.loading_hide();
+                if(res.status == 1){
+                    res.data.label.forEach(function(item,i){
+                        res.data.label[i] += ' ('+res.data.data_percent[i]+'%)';
+                    });
+                    draw_chart(res.data);
+                }
+            },
+            error : function(e){
+$j.alertable.alert('Có lỗi xảy ra vui lòng thử lại.');
+            }
+        });
+    }
+
+
+
+    var pieChart = null;
+	function draw_chart(data) {
+        if(pieChart != null) pieChart.destroy();    
+        
+		// For a pie chart
+		pieChart = new Chart('chart-doughnut', {
+		    type: 'doughnut',
+		    data: {
+		    	labels: data.label,
+			    datasets: [{
+			        label:"Region",
+					data:data.data,
+					backgroundColor:[
+						"rgb(255, 99, 132)",
+						"rgb(54, 162, 235)",
+						"rgb(255, 205, 86)",
+						"rgb(153, 102, 255)",
+						"rgb(75, 192, 192)",
+                        "rgb(26, 188, 156)",
+                        "rgb(67, 101, 136)",
+                        "rgb(250, 66, 67)",
+                        "rgb(202, 44, 104);",
+                        "rgb(192, 57, 43)",
+                        "rgb(73, 85, 104)",
+                        "rgb(243, 236, 210)",
+                        "rgb(189, 195, 199)",
+                        "rgb(243, 236, 210)",
+                        "rgb(189, 195, 199)",
+                        "rgb(243, 236, 210)",
+                        "rgb(189, 195, 199)",
+                        "rgb(243, 236, 210)",
+                        "rgb(189, 195, 199)",
+                        "rgb(243, 236, 210)",
+                        "rgb(189, 195, 199)",
+                        "rgb(243, 236, 210)",
+                        "rgb(189, 195, 199)",
+					]
+			    }],
+		    },
+		    options: {
+                tooltips: {
+                    enabled: true,
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            try {
+                              let label = ' ' + data.labels[tooltipItem.index] || '';
+
+                              if (label) {
+                                label += ' ';
+                              }
+
+                              // const sum = data.datasets[0].data.reduce((accumulator, curValue) => {
+                              //   return parseInt(accumulator) + parseInt(curValue);
+                              // });
+                              // const value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                              // label += '('+Number((value / sum) * 100).toFixed(2) + '%)';
+
+                              return label;
+                            } catch (error) {
+                              console.log(error);
+                            }
+                        }
+                    }
+                },
+                legend: {
+                    position: 'bottom'
+                }
+		    }
+		});
+	}
+</script>

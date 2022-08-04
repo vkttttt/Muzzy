@@ -1,0 +1,221 @@
+<% layout('../../layout/admin'); %>
+<!-- Content Header (Page header) -->
+<section class="content-header form-inline">
+    <h1>Update Profile<small><a href="#" onclick="window.history.go(-1); return false;"><i class="fa fa-reply"></i></a></small></h1>
+    <ol class="breadcrumb">
+        <li><a href="<%= _adminUrl%>"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+        <li class="active">Update Profile</li>
+    </ol>
+</section>
+
+<link href="<%=_staticUrl%>public/admin/css/cropper.css" rel="stylesheet" type="text/css">
+<script src="<%=_staticUrl%>public/admin/js/cropper.js"></script>
+
+<!-- Main content -->
+<section class="content">
+    <% if (typeof(valid_errors) != 'undefined' && valid_errors.length > 0) { %>
+    <section class="content-header">
+        <div class="alert alert-danger alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <% valid_errors.forEach(function(error){ %>
+            <p><i class="icon fa fa-warning"></i> <%= error%> </p>
+            <% }); %>
+        </div>
+    </section>
+    <% } %>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="box">
+                <form class="form-horizontal" id="FormAdd" method="post" autocomplete="off">
+                    <div class="box-body table-responsive">
+                        <table class="table table-striped table-bordered table-hover dataTable">
+                            <tbody>
+                            <tr>
+                                <td><label for="avatar">Avatar</label></td>
+                                <td>
+                                    <div class="upload-large">
+                                        <% var new_avatar = helpers.admin.get_query_data(data_edit,'new_avatar'); %>
+                                        <% if(new_avatar){%>
+                                            <img src="<%=new_avatar%>" id="preview" style="width: 200px;height: 200px">
+                                        <%}else{%>
+                                            <img src="<%=_staticUrl%><%=helpers.admin.get_query_data(data_edit,'avatar')%>" id="preview" style="width: 200px;height: 200px">
+                                        <%}%>
+                                        <input type="hidden" name="avatar" value="<%=helpers.admin.get_query_data(data_edit,'avatar')%>">
+                                        <input type="hidden" name="new_avatar" value="<%=new_avatar%>">
+                                        <div class="inputfile-container" style="margin-top: 3px">
+                                            <input class="inputfile" type="file" id="upload-1">
+                                            <label for="upload-1"></label>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="fullname">Họ tên</label></td>
+                                <td>
+                                    <input type="text" class="form-control medium" name="fullname" value="<%=helpers.admin.get_query_data(data_edit,'fullname')%>" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label></label></td>
+                                <td>
+                                    <div class="checkbox">
+                                        <input id="checkbox_update_password" onchange="handleChange(this);" class="styled" type="checkbox" name="update_password" value="1">
+                                        <label for="checkbox_update_password">Update password</label>
+                                    </div>
+                                    <div id="update-pass" style="display: none">
+                                        <br>
+                                        <input type="password" placeholder="Old password" name="old_password" id="old_password" class="form-control medium" autocomplete="off" />
+                                        <br>
+                                        <input type="password" placeholder="New password" name="new_password" id="new_password" class="form-control medium" autocomplete="off"/>
+                                        <br>
+                                        <input type="password" placeholder="Retype password" name="retype_password" id="retype_password" class="form-control medium" autocomplete="off"/>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <button type="button" onclick="Admin.confirm_submit(this);" class="btn btn-info btn-submit">Update</button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal" id="modal-upload" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Chỉnh sửa ảnh</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+            </div>
+            <div class="modal-body" style="margin: auto;">
+                <div class="crop-container" style="">
+                    <img id="image-crop" src="" style="display: none;">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary btn--m" id="crop_btn" type="button">Lưu ảnh</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    window.addEventListener('DOMContentLoaded', function () {
+        var cropper_c = null;
+        var crop_btn = document.getElementById('crop_btn');
+        var uploads = document.querySelectorAll('input[type=file]');
+        for (var i = 0; i < uploads.length; i++) {
+            uploads[i].addEventListener('change', function (e) {
+                var files = e.target.files;
+                var file_data = files[0];
+
+                e.target.value = '';
+                if(file_data.type != 'image/jpeg' && file_data.type != 'image/png'){
+                    Admin.loading_show('Only accept png or jpeg',1);return false;
+                }
+
+                //8MB
+                if(file_data.size > 12000000){
+                    Admin.loading_show('File maximum 12M',1);return false;
+                }
+
+                var reader = new FileReader();
+                reader.readAsDataURL(file_data);
+                reader.onload = function (el) {
+                    var image = document.getElementById('image-crop');
+                    image.src = reader.result;
+                    image.onload = function(){
+                        $("#modal-upload").modal("show");
+                        if(cropper_c != null){
+                            cropper_c.destroy();
+                        }
+
+                        var con_w = $('#modal-upload').find('.modal-body').width();
+                        $('.crop-container').css({"width": con_w});
+                        cropper_c = new Cropper(image, {
+                            modal: true,
+                            center: false,
+                            background: false,
+                            rotatable : true,
+                            dragMode:'move',
+                            aspectRatio: 1,
+                            viewMode: 2,
+                            responsive:true,
+                            checkOrientation:true,
+                            movable:true,
+                            zoomable:true,
+                            zoomOnTouch:true,
+                            cropBoxResizable:true,
+                            highlight:false,
+                            guides:false,
+                            minContainerWidth: con_w,
+                            minContainerHeight: con_w,
+                            minCropBoxWidth: 200,
+                            maxCropBoxWidth:200
+                        });
+                    };
+                };
+            });
+        }
+
+        crop_btn.addEventListener('click',function(e){
+            $(this).attr('disabled','disabled');
+            if(cropper_c == null){
+                return;
+            }
+
+            var canvas;
+
+            var ImageRootData = cropper_c.getImageData();
+            var ImageCropData = cropper_c.getData();
+            ImageCropData.naturalWidth = ImageRootData.naturalWidth;
+            ImageCropData.naturalHeight = ImageRootData.naturalHeight;
+
+            canvas = cropper_c.getCroppedCanvas({
+                width: ImageCropData.width,
+                height: ImageCropData.height
+            });
+            resizedataURL(canvas.toDataURL(),200,200);
+        });
+
+        function resizedataURL(data, wantedWidth, wantedHeight){
+            var img = new Image(wantedWidth,wantedHeight);
+            img.src = data;
+            img.onload = function() {
+                var canvas = document.createElement('canvas');
+                canvas.width = wantedWidth;
+                canvas.height = wantedHeight;
+
+                var ctx = canvas.getContext('2d');
+                ctx.webkitImageSmoothingEnabled = false;
+                ctx.mozImageSmoothingEnabled = false;
+                ctx.imageSmoothingEnabled = false;
+                ctx.imageSmoothingQuality = "high";
+                ctx.drawImage(this, 0, 0, wantedWidth, wantedHeight);
+
+                var avatar = document.getElementById('preview');
+                avatar.src = canvas.toDataURL();
+                avatar.onload = function(){
+                    $("#modal-upload").modal("hide");
+                    crop_btn.removeAttribute('disabled');
+                };
+                $('input[name="new_avatar"]').val(canvas.toDataURL('image/jpeg', 1.0));
+            };
+        }
+    });
+
+    function handleChange(checkbox){
+        if(checkbox.checked == true){
+            document.getElementById("update-pass").style.display = "block";
+        }else{
+            document.getElementById("update-pass").style.display = "none";
+        }
+    }
+</script>

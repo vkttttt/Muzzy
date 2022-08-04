@@ -1,0 +1,192 @@
+<% layout('../layout/default'); %>
+
+<div class="ps-breadcrumb">
+    <div class="container">
+      <ul class="breadcrumb">
+        <li>
+            <a href="/ezbooking">
+                Home
+            </a>
+        </li>
+        <li>
+            <a>
+                Đăng nhập
+            </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+<section class="ps-page--my-account">
+    <div class="ps-my-account">
+      <div class="container">
+        <div class="ps-form--account">
+          <ul class="ps-tab-list">
+            <li class="active">
+              <% if(!user_id){ %> 
+                    <a href="<%=_baseUrl%>login">Đăng nhập</a>
+                <% }; %>
+            </li>
+            <li>
+              <% if(!user_id){ %> 
+                    <a href="<%=_baseUrl%>register">Đăng ký</a>
+                <% }; %>
+            </li>
+          </ul>
+          <div class="ps-tab active login-box-body">
+              
+            <form action="" method="post">
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>">
+                    <div class="ps-form__content">
+                    <h5>Đăng nhập với tài khoản của bạn:</h5>
+                    <div class="form-group" id="sizing-addon2">
+                        <input type="text" class="ps-text-field" placeholder="username" name="username" required value="<%=helpers.ezbooking.get_query_data(post_data,'username')%>" <% if(appConfig.env == 'production'){ %> autocomplete="off" <%}%>>
+                    </div>
+                    <div class="form-group" id="sizing-addon2">
+                        <input type="password" class="ps-text-field" placeholder="password" required name="password" <% if(appConfig.env == 'production'){ %> autocomplete="off" <%}%>>
+                    </div>
+                    <!-- <div class="check">
+                        <input type="checkbox" color="warning" />
+                        <label>Ghi nhớ đăng nhập</label>
+                    </div> -->
+                    <% if ( typeof msg_error != 'undefined' && msg_error.length > 0 ) { %>
+                        <div class="small-box bg-red" style="color: red;">
+                            <div class="inner">
+                                <% msg_error.forEach(function(error){ %>
+                                <p><%= error %></p>
+                                <%});%>
+                            </div>
+                        </div>
+                    <% } %>
+                    <div class="submit">
+                        <button type="submit" class="ps-btn ps-btn--fullwidth">
+                        Đăng nhập
+                        </button>
+                    </div>
+                    </div>
+                    <div class="ps-form__footer">
+                        <p>Đăng nhập với:</p>
+                        <ul class="ps-list--social">
+                            <li>
+                            <a href="/" class="facebook">
+                                <i class="fa fa-facebook"></i>
+                            </a>
+                            </li>
+                            <li>
+                            <a href="/" class="google">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                            </li>
+                            <li>
+                            <a href="/" class="twitter">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                            </li>
+                            <li>
+                            <a href="/" class="instagram">
+                                <i class="fa fa-instagram"></i>
+                            </a>
+                            </li>
+                        </ul>
+                    </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer__default">
+    <div class="container">
+        <div class="ps-footer__widgets">
+            <div class="widget widget_footer widget_contact-us">
+                <h4 class="widget-title">Liên hệ</h4>
+                <div class="widget_content">
+                <p>Liên hệ với chúng tôi 24/7</p>
+                <h3>0965100798</h3>
+                <p>
+                351 Phú Thọ Hòa, Tân Phú, tp HCM<br />
+                <a href="#">contact@ezbooking.com</a>
+                </p>
+                <ul class="ps-list--social">
+                <li>
+                    <a class="facebook" href="#">
+                    <i class="fa fa-facebook"></i>
+                    </a>
+                </li>
+                <li>
+                    <a class="twitter" href="#">
+                    <i class="fa fa-twitter"></i>
+                    </a>
+                </li>
+                <li>
+                    <a class="google-plus" href="#">
+                    <i class="fa fa-google-plus"></i>
+                    </a>
+                </li>
+                <li>
+                    <a class="instagram" href="#">
+                    <i class="fa fa-instagram"></i>
+                    </a>
+                </li>
+                </ul>
+            </div>
+            </div>
+            <div class="widget widget_footer">
+                <h4 class="widget-title">Khám phá</h4>
+                <ul class="ps-list--link">
+                    
+                    <li>
+                    <a href="<%=_baseUrl%>collections">Bộ sưu tập</a>
+                    </li>
+                    <li>
+                    <a href="<%=_baseUrl%>branchs">Danh mục nhà hàng</a>
+                    </li>
+                    <li>
+                    <a href="<%=_baseUrl%>branchs">Nhà hàng mới</a>
+                    </li>
+                    <li>
+                    <a href="<%=_baseUrl%>branchs/hot">Nhà hàng nổi tiếng</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="widget widget_footer">
+                <h4 class="widget-title">Công ty</h4>
+                <ul class="ps-list--link">
+                    <li>
+                    <a href="#">Về chúng tôi</a>
+                    </li>
+                    <li>
+                    <a href="#">Chính sách liên kết</a>
+                    </li>
+                    <li>
+                    <a href="#">Chính sách sử dụng</a>
+                    </li>
+                    <li>
+                    <a href="#">Chính sách đảm bảo</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="widget widget_footer">
+                <h4 class="widget-title">Tiện ích</h4>
+                <ul class="ps-list--link">
+                    <li>
+                    <a href="<%=_baseUrl%>blogs">Bài viết</a>
+                    </li>
+                    <li>
+                    <a href="<%=_baseUrl%>register">Đăng ký</a>
+                    </li>
+                    <li>
+                    <a href="#">Tài khoản</a>
+                    </li>
+                    <li>
+                    <a href="#">Nhà hàng</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer__copyright">
+            <p>CopyRight &copy; EzBooking</p>
+        </div>
+    </div>
+  </footer>

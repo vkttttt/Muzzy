@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="2a765f4a-2b15-4204-8ae7-4e8d554c8e18" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ezbooking/app/configs/config_dev.js" beforeDir="false" afterPath="$PROJECT_DIR$/ezbooking/app/configs/config_dev.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ezbooking/app/configs/connect_mongodb.js" beforeDir="false" afterPath="$PROJECT_DIR$/ezbooking/app/configs/connect_mongodb.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ezbooking/app/helpers/admin.js" beforeDir="false" afterPath="$PROJECT_DIR$/ezbooking/app/helpers/admin.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ezbooking/app/modules/admin/routes/dashboard.js" beforeDir="false" afterPath="$PROJECT_DIR$/ezbooking/app/modules/admin/routes/dashboard.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ezbooking/app/modules/ezbooking/routes/orders.js" beforeDir="false" afterPath="$PROJECT_DIR$/ezbooking/app/modules/ezbooking/routes/orders.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ezbooking/app/views/admin/dashboard/dashboard.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/ezbooking/app/views/admin/dashboard/dashboard.ejs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ezbooking/app/views/ezbooking/orders/edit.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/ezbooking/app/views/ezbooking/orders/edit.ejs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ezbooking/app/views/ezbooking/orders/list.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/ezbooking/app/views/ezbooking/orders/list.ejs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ezbooking/app/views/layout/admin.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/ezbooking/app/views/layout/admin.ejs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ezbooking/app/views/layout/default/_head.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/ezbooking/app/views/layout/default/_head.ejs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ezbooking/bin/www" beforeDir="false" afterPath="$PROJECT_DIR$/ezbooking/bin/www" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ezbooking/public/frontend/assets/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/ezbooking/public/frontend/assets/css/style.css" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="22T0sE2KqhcVa63fGExgkkkE2GL" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="javascript.nodejs.core.library.configured.version" value="10.19.0" />
+    <property name="javascript.nodejs.core.library.typings.version" value="10.17.60" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/ezbooking/bin" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="debugger.dataViews" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/ezbooking/bin" />
+      <recent name="$PROJECT_DIR$/ezbooking/app/configs" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2a765f4a-2b15-4204-8ae7-4e8d554c8e18" name="Changes" comment="" />
+      <created>1639846475018</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1639846475018</updated>
+      <workItem from="1639846476822" duration="8874000" />
+      <workItem from="1639895888760" duration="10021000" />
+      <workItem from="1639930500197" duration="9103000" />
+      <workItem from="1639943185046" duration="325000" />
+      <workItem from="1640023571609" duration="638000" />
+      <workItem from="1640028173110" duration="3205000" />
+      <workItem from="1640101395227" duration="25000" />
+      <workItem from="1640104157279" duration="609000" />
+      <workItem from="1640104901092" duration="13822000" />
+      <workItem from="1640121142913" duration="184000" />
+      <workItem from="1640146917804" duration="3172000" />
+      <workItem from="1640150235850" duration="5000" />
+      <workItem from="1640163955808" duration="2835000" />
+      <workItem from="1640167036424" duration="140000" />
+      <workItem from="1640182713944" duration="6318000" />
+      <workItem from="1640231787615" duration="1240000" />
+      <workItem from="1640357864957" duration="185000" />
+      <workItem from="1640358058204" duration="7218000" />
+      <workItem from="1640366546617" duration="6448000" />
+      <workItem from="1640406877966" duration="20028000" />
+      <workItem from="1640450888787" duration="9692000" />
+      <workItem from="1640503360401" duration="17080000" />
+      <workItem from="1640536347884" duration="4935000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="master" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

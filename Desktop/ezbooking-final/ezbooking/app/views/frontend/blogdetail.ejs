@@ -1,0 +1,200 @@
+<% layout('../layout/default') %>
+
+<!------ Include the above in your HEAD tag ---------->
+
+<div class="ps-breadcrumb">
+    <div class="container">
+      <ul class="breadcrumb">
+        <li>
+            <a href="/ezbooking">
+                Home
+            </a>
+        </li>
+        <li>
+            <a>
+                Bài viết
+            </a>
+        </li>
+        <li>
+            <a>
+                <% if(blog){ %>
+                    <% if(blog.status == true){ %>
+                        <%=blog.title%>
+                    <%}%>
+                <% }; %>
+            </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+<div class="blog_wrap">
+    <div class="container">
+        
+        <div class="blog_wrap-content">
+            <% if(blog){ %>
+                <div    >
+                    <div class="title">
+                        <h1><%=blog.title %></h1>
+                        <p id="content"><%=blog.content%></p>
+                    </div>
+                </div>
+            <%} %>
+        </div>
+        <div class="blog_wrap-toolbar">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Mới nhất</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Xem nhiều nhất</a>
+                </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <% if(ez_blogdata){ %>
+                    <% ez_blogdata.forEach(function(blog){ %>
+                        <% if(blog){ %>
+                            <div class="blog_right-wrap">
+                                <a href="<%=_baseUrl%>blogs/<%=blog._id%>">
+                                <div class="blog_img">
+                                    <img src="<%=_staticUrl%><%=blog.thumbnail%>" alt="martfury" />
+                                </div>
+                                <div class="blog_info">
+                                    <p class="hiden__text_1"><%=blog.title%></p>
+                                    <span><%=blog.view%> views</span>
+                                </div>
+                                </a>
+                            </div>
+                        <% }; %>
+                        <% }); %>
+                    <% }; %>
+                </div>
+                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    <% if(ez_blogdata){ %>
+                    <% ez_blogdata.forEach(function(blog){ %>
+                        <% if(blog.is_hot == true){ %>
+                            <div class="blog_right-wrap">
+                                <a href="<%=_baseUrl%>blogs/<%=blog._id%>">
+                                <div class="blog_img">
+                                    <img src="<%=_staticUrl%><%=blog.thumbnail%>" alt="martfury" />
+                                </div>
+                                <div class="blog_info">
+                                    <p class="hiden__text_1"><%=blog.title%></p>
+                                    <span><%=blog.view%> views</span>
+                                </div>
+                                </a>
+                            </div>
+                        <% }; %>
+                        <% }); %>
+                    <% }; %>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<footer class="footer__default">
+    <div class="container">
+        <div class="ps-footer__widgets">
+            <div class="widget widget_footer widget_contact-us">
+                <h4 class="widget-title">Liên hệ</h4>
+                <div class="widget_content">
+                <p>Liên hệ với chúng tôi 24/7</p>
+                <h3>0965100798</h3>
+                <p>
+                351 Phú Thọ Hòa, Tân Phú, tp HCM<br />
+                <a href="#">contact@ezbooking.com</a>
+                </p>
+                <ul class="ps-list--social">
+                <li>
+                    <a class="facebook" href="#">
+                    <i class="fa fa-facebook"></i>
+                    </a>
+                </li>
+                <li>
+                    <a class="twitter" href="#">
+                    <i class="fa fa-twitter"></i>
+                    </a>
+                </li>
+                <li>
+                    <a class="google-plus" href="#">
+                    <i class="fa fa-google-plus"></i>
+                    </a>
+                </li>
+                <li>
+                    <a class="instagram" href="#">
+                    <i class="fa fa-instagram"></i>
+                    </a>
+                </li>
+                </ul>
+            </div>
+            </div>
+            <div class="widget widget_footer">
+                <h4 class="widget-title">Khám phá</h4>
+                <ul class="ps-list--link">
+                    
+                    <li>
+                    <a href="<%=_baseUrl%>collections">Bộ sưu tập</a>
+                    </li>
+                    <li>
+                    <a href="<%=_baseUrl%>branchs">Danh mục nhà hàng</a>
+                    </li>
+                    <li>
+                    <a href="<%=_baseUrl%>branchs">Nhà hàng mới</a>
+                    </li>
+                    <li>
+                    <a href="<%=_baseUrl%>branchs/hot">Nhà hàng nổi tiếng</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="widget widget_footer">
+                <h4 class="widget-title">Công ty</h4>
+                <ul class="ps-list--link">
+                    <li>
+                    <a href="#">Về chúng tôi</a>
+                    </li>
+                    <li>
+                    <a href="#">Chính sách liên kết</a>
+                    </li>
+                    <li>
+                    <a href="#">Chính sách sử dụng</a>
+                    </li>
+                    <li>
+                    <a href="#">Chính sách đảm bảo</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="widget widget_footer">
+                <h4 class="widget-title">Tiện ích</h4>
+                <ul class="ps-list--link">
+                    <li>
+                    <a href="<%=_baseUrl%>blogs">Bài viết</a>
+                    </li>
+                    <li>
+                    <a href="<%=_baseUrl%>register">Đăng ký</a>
+                    </li>
+                    <li>
+                    <a href="#">Tài khoản</a>
+                    </li>
+                    <li>
+                    <a href="#">Nhà hàng</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer__copyright">
+            <p>CopyRight &copy; EzBooking</p>
+        </div>
+    </div>
+  </footer>
+
+<script>
+    const rawStr = document.getElementById('content').innerHTML
+    const s = rawStr.replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+    document.getElementById('content').innerHTML = s
+</script>
+<script>
+    $(".blog_right-wrap").slice(0,10).show()
+</script>

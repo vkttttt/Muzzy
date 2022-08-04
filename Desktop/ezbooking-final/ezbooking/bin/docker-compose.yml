@@ -1,0 +1,12 @@
+version: "3"
+services:
+       app:
+           container_name: ads_dashboard
+           image: doc/node:v1
+           volumes:
+           - ./app:/app/app
+           - ./media:/app/media
+           restart: always
+           build: .
+           ports:
+             - "3000:3000"

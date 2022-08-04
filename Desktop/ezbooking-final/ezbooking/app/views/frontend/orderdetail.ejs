@@ -1,0 +1,257 @@
+<% layout('../layout/default') %>
+
+<!------ Include the above in your HEAD tag ---------->
+
+<div class="ps-breadcrumb">
+    <div class="container">
+      <ul class="breadcrumb">
+        <li>
+            <a href="/ezbooking">
+                Home
+            </a>
+        </li>
+        <li>
+            <a>
+                Chi tiết đơn đặt bàn
+            </a>
+        </li>
+      </ul>
+    </div>
+</div>
+
+<div class="page-section">
+    <div class="container__page">
+        <div class="page__title">
+            Lịch sử đặt bàn
+        </div>
+        <div class="history_wrap">
+            <div class="history__fillter">
+                <div>
+                    <select onchange="event.preventDefault(); getQueryLink()" id = "sort" class="form-control" data-placeholder="Sort Items">
+                    </select>
+                </div>
+                <div>
+                    <select onchange="event.preventDefault(); getQueryLink()" id = "status"  class="form-control" data-placeholder="Sort Items">
+                        <option value=''>Trạng thái</option>
+                    </select>
+                </div>                             
+            </div>
+            <div class="history__content">           
+                <table class="table__content">
+                    <tr>
+                        <th>STT</th>
+                        <th>Mã đơn hàng</th>
+                        <th>Thời gian</th>
+                        <th>Địa điểm</th>
+                        <th>Tổng tiền</th>
+                        <th>Trạng thái</th>
+                        <th>Chi tiết</th>
+                    </tr>
+                </table>             
+            </div>
+        </div>
+    </div>
+</div><!-- Page Section End -->
+
+<div class="popup2 modal-overlay">
+    <form id="form-book" class="form-2" action="" method="POST">
+        <div class="form-2-title">
+            <h2>Chi tiết đơn đặt hàng</h2>
+            <span><a href="<%=_baseUrl%>profile/orders"><i class="fa fa-times" aria-hidden="true"></i></a></span>
+        </div>
+        <% if(order){ %>
+        <div class="row">
+            <div class="col-md-5 col-sm-12">
+                <div class="form-2-left">
+                    <img src="<%=_staticUrl%><%=branch.thumbnail%>" alt="">
+                    <p>Nhà hàng: <a href="<%=_baseUrl%>branchs/<%=order.branch_id%>"><%=branch.name%></a> </p>
+                    <p>Địa chỉ: <%=branch.address%></p>
+                </div>
+            </div>
+            <div class="col-md-7 col-sm-12">
+                <div class="form-2-right">
+                    <p><strong>Khách hàng:</strong> <%=order.fullname%></p>
+                    <p><strong>Sđt:</strong> <%=order.phone%></p>
+                    <p><strong>Email:</strong> <%=order.email%></p>
+                    <p><strong>Số lượng chỗ:</strong> <%=order.slot%></p>
+                    <p><strong>Trạng thái:</strong> <%=order.sstatus%></p>
+                    <p><strong>Phí đặt chỗ:</strong> <%=order.booking_cost%></p>
+                    <p><strong>Thời gian:</strong> <%=order.time%></p>
+                </div>
+            </div>
+        </div>
+    <% }; %>
+    </form>
+</div>
+
+<footer class="footer__default">
+    <div class="container">
+        <div class="ps-footer__widgets">
+            <div class="widget widget_footer widget_contact-us">
+                <h4 class="widget-title">Liên hệ</h4>
+                <div class="widget_content">
+                <p>Liên hệ với chúng tôi 24/7</p>
+                <h3>0965100798</h3>
+                <p>
+                351 Phú Thọ Hòa, Tân Phú, tp HCM<br />
+                <a href="#">contact@ezbooking.com</a>
+                </p>
+                <ul class="ps-list--social">
+                <li>
+                    <a class="facebook" href="#">
+                    <i class="fa fa-facebook"></i>
+                    </a>
+                </li>
+                <li>
+                    <a class="twitter" href="#">
+                    <i class="fa fa-twitter"></i>
+                    </a>
+                </li>
+                <li>
+                    <a class="google-plus" href="#">
+                    <i class="fa fa-google-plus"></i>
+                    </a>
+                </li>
+                <li>
+                    <a class="instagram" href="#">
+                    <i class="fa fa-instagram"></i>
+                    </a>
+                </li>
+                </ul>
+            </div>
+            </div>
+            <div class="widget widget_footer">
+                <h4 class="widget-title">Khám phá</h4>
+                <ul class="ps-list--link">
+                    
+                    <li>
+                    <a href="<%=_baseUrl%>collections">Bộ sưu tập</a>
+                    </li>
+                    <li>
+                    <a href="<%=_baseUrl%>branchs">Danh mục nhà hàng</a>
+                    </li>
+                    <li>
+                    <a href="<%=_baseUrl%>branchs">Nhà hàng mới</a>
+                    </li>
+                    <li>
+                    <a href="<%=_baseUrl%>branchs/hot">Nhà hàng nổi tiếng</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="widget widget_footer">
+                <h4 class="widget-title">Công ty</h4>
+                <ul class="ps-list--link">
+                    <li>
+                    <a href="#">Về chúng tôi</a>
+                    </li>
+                    <li>
+                    <a href="#">Chính sách liên kết</a>
+                    </li>
+                    <li>
+                    <a href="#">Chính sách sử dụng</a>
+                    </li>
+                    <li>
+                    <a href="#">Chính sách đảm bảo</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="widget widget_footer">
+                <h4 class="widget-title">Tiện ích</h4>
+                <ul class="ps-list--link">
+                    <li>
+                    <a href="<%=_baseUrl%>blogs">Bài viết</a>
+                    </li>
+                    <li>
+                    <a href="<%=_baseUrl%>register">Đăng ký</a>
+                    </li>
+                    <li>
+                    <a href="#">Tài khoản</a>
+                    </li>
+                    <li>
+                    <a href="#">Nhà hàng</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer__copyright">
+            <p>CopyRight &copy; EzBooking</p>
+        </div>
+    </div>
+  </footer>
+
+  <style>
+.form-2{
+    background-color: #f5f5f5 !important;
+}
+.form-2-title{
+    display: flex;
+    justify-content: space-between;
+    background-color: #17a2b8;
+    color: #fff;
+    padding: 10px 20px;
+}
+.form-2-title h2{
+    margin-bottom: 0px !important;
+}
+.form-2-title span{
+    display: flex;
+    align-items: center;
+}
+.form-2-title span i{
+    color: #fff;
+    cursor: pointer;
+    font-size: 20px;
+}
+.form-2 .row{
+    padding:20px;
+}
+.form-2-left{
+    background-color: #fff;
+    padding:10px;
+    border:5px;
+    height: 100%;
+}
+.form-2-left img{
+    width: 100%;
+}
+.form-2-left p{
+    margin:10px 0;
+}
+.form-2-right{
+    background-color: #fff;
+    padding:10px;
+    border:5px;
+    height: 100%;
+}
+.form-2-right .form-2-top{
+    height: 45%;
+}
+.form-2-right .form-2-mid{
+    height: 40%;
+    padding:10px;
+}
+.form-2-right .form-2-mid .imgUploaded{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+}
+.form-2-right .form-2-mid .imgUploaded img{
+    width: 25%;
+    height: 100%;
+}
+.form-2-right .form-2-top textarea{
+    height: 100%;
+    width: 100%;
+}
+.form-2-right .form-2-bottom{
+    height: 15%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.form-2-right .form-2-mid input[type="file"]{
+    margin-left: 0px !important;
+}
+</style>

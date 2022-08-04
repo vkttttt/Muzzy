@@ -1,0 +1,30 @@
+var fs = require('fs');
+var path = require('path');
+
+// import all schema file in this dir, except index.js
+var db = {};
+fs.readdirSync(__dirname).filter(function(file){
+    return (file.indexOf('.js') !== 0) && (file !== 'index.js');
+}).forEach(function(file){
+    var model = require(path.join(__dirname, file));
+    db[model.modelName] = model;
+});
+
+//load model default
+var my_model = require('../../../libs/mongoose');
+var model = new my_model(db);
+
+//load model custom
+model['custom'] = {
+    get_field : async function(model_name,exclude = '__v _id'){
+        var paths = eval('db.'+model_name).schema.paths;
+        var arrField = [];
+        Object.keys(paths).map(function(field, index) {
+            if(exclude.indexOf(field) === -1){
+                arrField[field] = paths[field].instance;
+            }
+        });
+        return arrField;
+    }
+};
+module.exports = model;

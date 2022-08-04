@@ -1,0 +1,11 @@
+{
+    "apps": [
+        {
+            "name": "ezbooking",
+            "script": "./app.js",
+            "ignore_watch": [
+                "node_modules"
+            ]
+        }
+    ]
+}

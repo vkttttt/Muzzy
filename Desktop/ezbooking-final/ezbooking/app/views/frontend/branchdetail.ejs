@@ -1,0 +1,913 @@
+<% layout('../layout/default') %>
+
+<!------ Include the above in your HEAD tag ---------->
+
+<div class="ps-breadcrumb">
+    <div class="container">
+      <ul class="breadcrumb">
+        <li>
+            <a href="/ezbooking">
+                Home
+            </a>
+        </li>
+        <li>
+            <a href="<%=_baseUrl%>collections">
+                Bộ sưu tập
+            </a>
+        </li>
+        <li>
+            <% if(branch){ %>
+                <% if(branch.status == true){ %>
+                    <%=branch.name%>
+                <%}%>
+            <% }; %>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+<div class="ps-product--detail">
+  <div class="container">
+    <div class="ps-product__top">
+      <% if(branch){ %>
+      <div class="ps-product__header">
+        <div class="ps-product__thumbnail">
+          <img src="<%=_staticUrl%><%=branch.thumbnail %>" alt="" />
+        </div>
+        <div class="ps-product__info">
+          <h1><%=branch.name %></h1>
+          <div class="ps-product__meta">
+            <span>Thời gian mở cửa: </span>
+            <div class="ps-product__rating">
+              <span>từ <%=branch.open_time %></span> <span style="margin-left:5px;"> đến <%=branch.close_time %></span>
+            </div>
+          </div>
+          <div class="ps-product__desc">
+            <h5>Ưu đãi khi đặt bàn:</h5>
+            <ul class="ps-list--dot">
+              <li>Giảm 30%: Ăn trưa từ t2 đến t6.</li>
+              <li>Giảm 30%: Ăn trưa từ t2 đến t6.</li>
+              <li>Giảm 30%: Ăn trưa từ t2 đến t6.</li>
+              <li>Giảm 30%: Ăn trưa từ t2 đến t6.</li>
+              <li>Giảm 30%: Ăn trưa từ t2 đến t6.</li>
+            </ul>
+          </div>
+
+          <div class="ps-product__sharing">
+            
+            <a class="facebook" href="<%=branch.facebook%>">
+              <i class="fa fa-facebook"></i>
+            </a>
+            <a class="twitter" href="<%=branch.website%>">
+              <i class="fa fa-google" aria-hidden="true"></i>
+            </a>
+            <a class="instagram" href="<%=branch.instagram%>">
+              <i class="fa fa-instagram"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      <% }; %>
+      <div class="ps-product__price-right">
+        <div class="ps-product__shopping">
+          <a class="ps-btn btn-info" href="tel:<%=branch.hotline%>"> Gọi để đặt bàn </a>
+          <% if(user_id){ %>
+          <a class="ps-btn btn-info" style="color: #fff !important;" id="showModal">
+            Đặt bàn ngay
+          </a>
+          <% }; %>
+          <% if(!user_id){ %>
+          <a class="ps-btn btn-info" href="<%=_baseUrl%>login">
+            Đặt bàn ngay
+          </a>
+          <% }; %>
+          <a class="ps-btn btn-info" href="<%=branch.facebook%>"> Đặt bàn qua facebook </a>
+          <a class="ps-btn btn-info" href="<%=branch.facebook%>"> Đặt bàn qua zalo </a>
+          <% if (!user_id){ %>
+            <a class="ps-btn btn-info" href="#">Theo dõi nhà hàng <i id ="follow1" class="far fa-heart"></i></a>
+          <%} else{%>
+            <input type="hidden" id="branch_id" name="branch_id" value="<%= branch._id %>">
+            <input type="hidden" id="restaurant_id" name="restaurant_id" value="<%= branch.restaurant_id %>">
+            <input type="hidden" id="user_id" name="user_id" value="<%=user_id%>">
+            <a class="ps-btn btn-info" href="#" onclick="event.preventDefault(); follow()" >
+              <% var follow; if(is_follow) { follow = "fas fa-heart"} else follow = "far fa-heart" %>
+              Theo dõi nhà hàng 
+              <i id ="follow" class="<%=follow%>" value ="<%=is_follow%>"></i>
+            </a>
+          <%}%>
+        </div>
+      </div>
+    </div>
+    <div class="res_infomation">
+      <div class="ps-product__content">
+        <div class="tabs">
+          <ul class="tabs__header nav nav-pills mb-3" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#introduce" role="tab" aria-controls="pills-home" aria-selected="true">Giới thiệu</a>
+            </li>
+            <li class="nav-item" role="presentation">
+              <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#promotion" role="tab" aria-controls="pills-profile" aria-selected="false">Món ăn</a>
+            </li>
+            <li class="nav-item" role="presentation">
+              <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#address" role="tab" aria-controls="pills-contact" aria-selected="false">Địa chỉ</a>
+            </li>
+            <li class="nav-item" role="presentation">
+              <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#review" role="tab" aria-controls="pills-contact" aria-selected="false">Đánh giá</a>
+            </li>
+            <li class="nav-item" role="presentation">
+              <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#image" role="tab" aria-controls="pills-contact" aria-selected="false">Hình ảnh</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="tab-content" id="pills-tabContent">
+        <div class="tab-pane fade show active" id="introduce" role="tabpanel" aria-labelledby="pills-home-tab">
+          <div class="ps-document">
+            <p>
+              <%=branch.description %>
+            </p>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="promotion" role="tabpanel" aria-labelledby="pills-profile-tab">
+          <div class="table-responsive">
+            
+          </div>
+        </div>
+        <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="pills-contact-tab">
+          <div class="ps-document gg-map">
+            <h5>Nhà hàng tọa lạc tại <%=branch.address %></h5>
+            <div id="map"></div>
+            <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDqVTPj9dOwmINbHdq6sWcGLi-VNAxyiLY&callback=initMap&v=weekly" async></script>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="review" role="tabpanel" aria-labelledby="pills-contact-tab">
+          <div class="row">
+              <div class="col-xl-5 col-lg-5 col-md-12 col-sm-12 col-12">
+                <% if(branch){ %>
+                  <div class="ps-block--average-rating">
+                    <div class="ps-block__header">
+                    <h3><%=branch.rate%></h3>
+                    <% if(branch.rate === 0) {%>
+                      <span class="ps-rating">
+                          <i class="fa fa-star-o"></i>
+                          <i class="fa fa-star-o"></i>
+                          <i class="fa fa-star-o"></i>
+                          <i class="fa fa-star-o"></i>
+                          <i class="fa fa-star-o"></i>
+                      </span>
+                      <% } if(0 < branch.rate && branch.rate <= 1) {%>
+                      <span class="ps-rating">
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star-o"></i>
+                          <i class="fa fa-star-o"></i>
+                          <i class="fa fa-star-o"></i>
+                          <i class="fa fa-star-o"></i>
+                      </span>
+                      <% } if(1 < branch.rate && branch.rate <= 2) {%>
+                      <span class="ps-rating">
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star-o"></i>
+                          <i class="fa fa-star-o"></i>
+                          <i class="fa fa-star-o"></i>
+                      </span>
+                      <% } if(2 < branch.rate && branch.rate <= 3) {%>
+                      <span class="ps-rating">
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star-o"></i>
+                          <i class="fa fa-star-o"></i>
+                      </span>
+                      <% } if(3 < branch.rate && branch.rate <= 4) {%>
+                      <span class="ps-rating">
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star-o"></i>
+                      </span>
+                      <% } if(4 < branch.rate && branch.rate <= 5) {%>
+                      <span class="ps-rating">
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                      </span>
+                      <% } %>
+                      <span><%=branch.rate_total%> nhận xét</span>
+                    </div>
+                  </div>
+                <% }; %>
+              </div>
+              <div class="col-xl-7 col-lg-7 col-md-12 col-sm-12 col-12">
+                <div class="comment_wrap">
+                  <% if(dataRate){ %> 
+                    <% dataRate.forEach(function(item){ %>
+                  <div class="comment_item">
+                    <div class="comment_top">
+                      <div class="comment_top-left">
+                        <div class="comment_avatar">
+                          <img src="<%=_staticUrl%><%=item.userdata.avatar%>" alt="EzBooking" />
+                        </div>
+                        <div class="comment_info">
+                          <div class="info-name">
+                            <%=item.userdata.fullname%>
+                          </div>
+                          <div class="info-time">
+                            <%=item.date%>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="comment_top-right">
+                        <div class="info-rate">
+                          <%=item.rate%>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="comment_bottom">
+                      <div class="info-comment">
+                        <%=item.comment%>
+                      </div>
+                      <div class="comment_image">
+                        <img src="<%=_staticUrl%><%=item.image%>" alt="EzBooking" />
+                      </div>
+                    </div>
+                  </div>
+                  <% }); %>
+                  <% }; %>
+                </div>
+              </div>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="image" role="tabpanel" aria-labelledby="pills-contact-tab">
+            <div class="ps-top-categories">
+                <div class="ps-container">
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 col-sm-4 col-6">
+                      <div class="ps-block--category">
+                        <img
+                          src="../../../../src/assets/img/product/300x300.png"
+                          alt=""
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="popup modal-overlay display">
+  <form id="form-book" action="" method="POST">
+    <input type="hidden" id="_csrf" name="_csrf" value="<%= csrftoken %>">
+    <div class="row-top">
+      <h2>Đơn đặt bàn</h2>
+      <span class="icon-cross"><i class="fa fa-times" aria-hidden="true"></i></span>
+    </div>
+    <% if(branch){ %>
+    <div class="form-wrap" style="padding:10px;">
+      <div class="row">
+        <div class="col-md-5">
+          <div class="form-book-img">
+            <img src="<%=_staticUrl%><%=branch.thumbnail %>" alt="" />
+          </div>
+          <div class="form-book-name">
+            <p><%=branch.name %></p>
+          </div>
+          <div class="form-book-address">
+            <p><%=branch.address %></p>
+          </div>
+          <div class="form-book-news">
+            <p>Nhà hàng <%=branch.name %> miễn phí đặt chỗ cho khách hàng đặt dưới <%=branch.min_slot %> chỗ.</p>
+            <p>Quý khách vui lòng đặt bàn trước 1h để được phục vụ tốt nhất.</p>
+          </div>
+        </div>
+        <div class="col-md-7 form-book-right">
+          <div class="form-book-title">
+            Thông tin & liên hệ
+          </div>
+          <div class="form-item form-item-flex">
+            <div style="padding-right:10px;">
+              <input type="text" class="form-control" placeholder="Họ tên" id="fullname" name="fullname" required autofocus>
+            </div>
+            <div style="padding-left:10px">
+              <input type="tel" class="form-control" placeholder="Số điện thoại" id="phone" name="phone" required autofocus>
+            </div>
+          </div>
+          <div class="form-item">
+            <input type="email" class="form-control" placeholder="Email" id="email" name="email" required autofocus>
+          </div>
+          <div class="form-item form-item-flex">
+            <div style="padding-right:10px;">
+              <input type="date" class="form-control" id="date" name="date" required/>
+            </div>
+            <div style="padding-left:10px">
+              <input type="text" class="form-control" id="time" name="time" placeholder="10.00" required autofocus/>
+            </div>
+          </div>
+          <div class="form-item-flex">
+            <div style="padding-right:10px;">
+              <input type="hidden" class="form-control"id="slot" name="slot">
+              <button class="btn btn-info btn-submit" onclick="event.preventDefault(); showTable()">Chọn chỗ</button>
+            </div>
+            <div style="padding-left:10px">
+              <input type="text" class="form-control" id="voucher" name="voucher" placeholder="Nhập mã voucher"/>
+            </div>
+          </div>
+          <span style="font-size:10px;"><span style="color: red;">*</span>Với số lượng chỗ > <%=branch.min_slot %> thì phí đặt chỗ là <%=branch.reservation_fee %>/chỗ.</span>
+          <div class="form-item" style="margin-top:10px;">
+            <textarea type="text" class="form-control" placeholder="Ghi chú" style="height: 80px;"></textarea>
+          </div>
+          
+          <div class="form-item">
+            <input type="radio" id="sms_check" name="code_check"/>
+            <span>Xác nhận qua sms</span>
+            <br>
+            <input type="radio" id="email_check" name="code_check"/>
+            <input type="hidden" id="code-send" name="code-check">
+            <span>Xác nhận qua email</span>
+          </div>
+          <div class="row-button">
+            <button class="btn btn-info btn-submit" onclick="event.preventDefault(); showPopup()">Đặt bàn</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% }; %>
+    <div class="popup-submit display">
+      <div class="title-wrap">
+        <h3>Xác nhận đặt bàn</h3>
+      </div>
+      <div class="popup-area">
+        <p>Bạn đang đặt bàn với thông tin như sau:</p>
+        <div id="submit-name"></div>
+        <div id="submit-phone"></div>
+        <div id="submit-email"></div>
+        <div id="submit-slot"></div>
+        <div id="submit-time"></div>
+        <div>
+          <p><strong>Nhà hàng:</strong> <%=branch.name %></p>
+        </div>
+        <div>
+          <p><strong>Địa chỉ:</strong> <%=branch.address %></p>
+        </div>
+        <div class="show_fee">
+        <div id="submit-fee"></div>
+          <div class="payment_paypal">
+            <p style="font-size: 11px;"><span style="color: red;">*</span> Bạn cần thanh toán phí đặt chỗ trước để có thể đặt bàn tại nhà hàng.</p>
+          </div>
+        </div>
+        <div class ="confirm-email">
+          <p><strong>Nhập mã xác nhận:</strong> </p>
+          <div style="display: flex;justify-content: start;">
+            <input class="form-control" type="text" id="input-code-confirm" name="input-code-confirm" style="max-width: 40%;"/>
+            <button class="btn btn-info btn-submit" style="margin-left: 20px;" onclick="event.preventDefault(); confirmCode()">Nhập</button>
+          </div>
+        </div>
+        <!-- <div class ="confirm-sms">
+          <p><strong>Nhập mã xác nhận qua sms:</strong> </p>
+        </div> -->
+      </div>
+      <div style="display: flex;justify-content: space-between;align-items: center;height: 50px;padding:0 20px 20px;">
+        <div class="btn btn-info btn-submit" id="back">Quay lại</div>
+        <button type="submit" class="btn btn-info btn-submit"> Xác nhận</button>
+      </div>
+    </div>
+
+    <div class="popup-submit popup1">
+      <div class="title-wrap" style="display: flex;justify-content: space-between;align-items:center">
+        <h3 style="margin-bottom: 0px;">Sơ đồ bố trí bàn</h3>
+        <span class="icon-cross-2"><i class="fa fa-times" aria-hidden="true"></i></span>
+      </div>
+      <div class="popup__note">
+          <div class="table__empty">
+            <span class="table__empty-color"></span>
+            <span>Bàn trống</span>
+          </div>
+          <div class="table__full" style="margin:0 20px">
+            <span class="table__full-color"></span>
+            <span>Bàn đã được đặt</span>
+          </div>
+          <div>
+            <span>*Biểu tượng bàn tương ứng với số chỗ</span>
+          </div>
+      </div>
+      <div class="popup_floor">
+        <% if(floor_list){ %> 
+          <% floor_list.forEach(function(item){ %>
+        <div class="floor-area">
+            <h4><%= item.floor_name %> (tổng <%=item.num_of_table%> bàn - còn <%=item.table_active%> bàn trống)</h4>
+            <table style=" border: 1px solid #ddd;">
+              <% for(var i = 0; i < item.height; i++){ %>
+                <tr>
+                  <% for(var j = 0; j < item.width; j++){ %>
+                    <td >
+                      <% if(item.table_list){ %> 
+                        <% item.table_list.forEach(function(table){ %>
+                          <% if(table.position_x == i){ %>
+                            <% if(table.position_y == j){ %>
+                              <% if(table.status == 0 && table.slot != 0){ %>
+                                <div class="item-table">
+                                  <div class="table_background" style="background-image: url(<%=_staticUrl%>public/frontend/assets/img/table/<%=table.slot%>slot-active.png);">
+                                      <input type="checkbox" class="table_list" id="table" name="table" value="<%=table.ts%>" style="cursor: pointer;">
+                                  </div>
+                                </div>
+                              <% } else if(table.status == 1 && table.slot != 0){ %>
+                                <div class="item-table">
+                                  <div class="table_background-red" style="background-image: url(<%=_staticUrl%>public/frontend/assets/img/table/<%=table.slot%>slot.png);">
+                                      <input type="checkbox" disabled>
+                                  </div>
+                                </div>
+                                <% } else {%>
+                                <div class="item-table">
+                                  <div class="table_background">
+                                      
+                                  </div>
+                                </div>
+                                <% } %>
+                            <% } %>
+                          <% } %>
+                        <% }) %>
+                      <% } %>
+                    </td>
+                  <% } %>
+                </tr>
+              <% } %>
+            </table>
+        </div>
+          <%}) %>
+        <% } %>  
+      </div>
+      <div style="display:flex;justify-content:center;height: 40px;margin: 20px 0;">
+        <button id ="offPopup" class="btn btn-info btn-submit" onclick="event.preventDefault(); addTable()">Xác nhận</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<footer class="footer__default">
+  <div class="container">
+      <div class="ps-footer__widgets">
+          <div class="widget widget_footer widget_contact-us">
+              <h4 class="widget-title">Liên hệ</h4>
+              <div class="widget_content">
+              <p>Liên hệ với chúng tôi 24/7</p>
+              <h3>0965100798</h3>
+              <p>
+              351 Phú Thọ Hòa, Tân Phú, tp HCM<br />
+              <a href="#">contact@ezbooking.com</a>
+              </p>
+              <ul class="ps-list--social">
+              <li>
+                  <a class="facebook" href="#">
+                  <i class="fa fa-facebook"></i>
+                  </a>
+              </li>
+              <li>
+                  <a class="twitter" href="#">
+                  <i class="fa fa-twitter"></i>
+                  </a>
+              </li>
+              <li>
+                  <a class="google-plus" href="#">
+                  <i class="fa fa-google-plus"></i>
+                  </a>
+              </li>
+              <li>
+                  <a class="instagram" href="#">
+                  <i class="fa fa-instagram"></i>
+                  </a>
+              </li>
+              </ul>
+          </div>
+          </div>
+          <div class="widget widget_footer">
+              <h4 class="widget-title">Khám phá</h4>
+              <ul class="ps-list--link">
+                  
+                  <li>
+                  <a href="<%=_baseUrl%>collections">Bộ sưu tập</a>
+                  </li>
+                  <li>
+                  <a href="<%=_baseUrl%>branchs">Danh mục nhà hàng</a>
+                  </li>
+                  <li>
+                  <a href="<%=_baseUrl%>branchs">Nhà hàng mới</a>
+                  </li>
+                  <li>
+                  <a href="<%=_baseUrl%>branchs/hot">Nhà hàng nổi tiếng</a>
+                  </li>
+              </ul>
+          </div>
+          <div class="widget widget_footer">
+              <h4 class="widget-title">Công ty</h4>
+              <ul class="ps-list--link">
+                  <li>
+                  <a href="#">Về chúng tôi</a>
+                  </li>
+                  <li>
+                  <a href="#">Chính sách liên kết</a>
+                  </li>
+                  <li>
+                  <a href="#">Chính sách sử dụng</a>
+                  </li>
+                  <li>
+                  <a href="#">Chính sách đảm bảo</a>
+                  </li>
+              </ul>
+          </div>
+          <div class="widget widget_footer">
+              <h4 class="widget-title">Tiện ích</h4>
+              <ul class="ps-list--link">
+                  <li>
+                  <a href="<%=_baseUrl%>blogs">Bài viết</a>
+                  </li>
+                  <li>
+                  <a href="<%=_baseUrl%>register">Đăng ký</a>
+                  </li>
+                  <li>
+                  <a href="#">Tài khoản</a>
+                  </li>
+                  <li>
+                  <a href="#">Nhà hàng</a>
+                  </li>
+              </ul>
+          </div>
+      </div>
+      <div class="footer__copyright">
+          <p>CopyRight &copy; EzBooking</p>
+      </div>
+  </div>
+</footer>
+
+<style>
+  input[type="checkbox"]{
+    height: 15px;
+    width: 15px;
+  }
+  .ps-block--average-rating{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+  }
+  .comment_wrap{
+    padding:10px;
+    background-color: #eee;
+  }
+  .comment_item{
+    display: flex;
+    flex-direction: column;
+    height: 250px;
+    background-color: #fff;
+  }
+  .comment_top{
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .comment_top-left{
+    display: flex;
+    justify-self: start;
+  }
+  .comment_avatar img{
+    height: 50px;
+  }
+  .comment_info{
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+  }
+  .comment_top-right{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+  }
+  .comment_bottom{
+    height: 200px;
+    margin-top:20px;
+  }
+  .comment_image{
+    width: 120px;
+    margin-top: 10px;
+  }
+  .comment_image img{
+    width: 100%;
+  }
+  #map{
+    height: 90%;
+  }
+  .gg-map{
+    height: 500px;
+  }
+  .icon-cross-2{
+    cursor: pointer;
+  }
+</style>
+
+<style>
+  .popup1{
+    width: auto;
+    max-width: 1150px;
+    min-width: 750px;
+    top: 50%;
+  }
+  .item-floor{
+    margin-top: 10px;
+  }
+  .popup_floor{
+    overflow: scroll;
+    height: 400px;
+    width: 100%;
+    padding:20px;
+  }
+  .floor-area{
+    padding:20px;
+    border:1px solid #ddd;
+    margin-bottom: 20px;
+  }
+  .floor-area:last-child{
+    margin-bottom: 0;
+  }
+  .floor-area table tr td{
+    vertical-align: bottom !important;
+  }
+  .item-table{
+    margin: 10px 20px;
+    display: flex;
+    align-items: center;
+  }
+  .popup__note{
+    height: 50px;
+    background-color: #eee;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+  }
+  .table__empty .table__empty-color{
+    background-color: #8ac5ec;
+    padding: 0 10px;
+    margin-right: 5px;
+  }
+  .table__full .table__full-color{
+    background-color: #4e4e4e;
+    padding: 0 10px;
+    margin-right: 5px;
+  }
+ </style>
+
+<script>
+  $('#showModal').click(function(){
+      $('.popup').removeClass('display');
+      $('.navigation--list').addClass('display');
+  });
+  $('.modal-overlay .icon-cross').click(function(){
+      $('.popup').addClass('display');
+      $('.navigation--list').removeClass('display');
+  });
+  $('.popup-submit .icon-cross-2').click(function(){
+      $('.popup1').addClass('display');
+  });
+
+  $('#back').click(function(){
+      $('.popup-submit').addClass('display');
+  });
+  $('#offPopup').click(function(){
+      $('.popup1').addClass('display');
+  });
+
+</script>
+
+<script>
+  function showPopup(){
+    var fullname = document.getElementById("fullname").value;
+    var phone = document.getElementById("phone").value;
+    var email = document.getElementById("email").value;
+    var slot = document.getElementById("slot").value;
+    var date = document.getElementById("date").value;
+    var time = document.getElementById("time").value;
+
+    var name1 = document.getElementById("submit-name");
+    var phone1 = document.getElementById("submit-phone");
+    var email1 = document.getElementById("submit-email");
+    //var slot1 = document.getElementById("submit-slot");
+    var time1 = document.getElementById("submit-time");
+    var fee1 = document.getElementById("submit-fee");
+
+    if(slot > <%=branch.min_slot%>){
+      var fee = slot*<%=branch.reservation_fee %>;
+    }
+    else {
+      fee = 0;
+    }
+    
+
+    name1.innerHTML = '<p><strong>Họ tên:</strong>' + fullname + '</p>';
+    phone1.innerHTML = '<p><strong>Điện thoại:</strong>' + phone + '</p>';
+    email1.innerHTML = '<p><strong>Email:</strong>' + email + '</p>';
+    //slot1.innerHTML = '<p><strong>Số lượng chỗ:</strong>' + slot + '</p>';
+    time1.innerHTML = '<p><strong>Thời gian:</strong>' + date +" "+ time + '</p>';
+    fee1.innerHTML = '<p><strong>Phí đặt chỗ:</strong>' + fee + '</p>';
+
+    if(fullname == ""){
+      alert("Bạn chưa điền họ tên!")
+    }
+    else if(phone == ""){
+      alert("Bạn chưa điền số điện thoại!")
+    }
+    else if(email == ""){
+      alert("Bạn chưa điền email!")
+    }
+    else if(slot == ""){
+      alert("Bạn chưa điền số lượng chỗ!")
+    }
+    else if(date == ""){
+      alert("Bạn chưa chọn ngày tháng!")
+    }
+    else if(time == ""){
+      alert("Bạn chưa điền thời gian!")
+    }
+    else{
+      document.querySelector(".popup-submit").classList.remove("display");
+    }
+
+    
+    var sms_check = document.getElementById("sms_check").checked;
+    var email_check = document.getElementById("email_check").checked;
+    var _csrf = document.getElementById("_csrf").value;
+    var code = document.getElementById("code-send");
+
+    const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let token = '';
+    for (let i = 0; i < 5; i++) {
+        token += characters[Math.floor(Math.random() * characters.length )];
+    }
+    code.value = token;
+
+    console.log("1: ", sms_check, "2: ", email_check);
+
+    var data_post = {};
+    if(email_check){
+      var data_post={
+        _csrf:_csrf,
+        email: email,
+        check_email: true,
+        check_sms: false,
+        token: token,
+      };
+      console.log("confirm mail: ", data_post);
+    }
+
+    if(sms_check){
+      var data_post={
+        _csrf:_csrf,
+        phone: phone,
+        check_email: false,
+        check_sms: true,
+        token: token,
+      };
+      console.log("confirm sms: ", data_post);
+    }
+    $.ajax({
+        type: 'POST',
+        url: `${base_url}branchs/confirm-order`,
+        data: data_post,
+        dataType: 'json',
+        success: function(res) {
+            
+        },
+        error: function(e) {
+            console.log(e);
+        }
+    });
+  }
+
+  function confirmCode() { 
+    var code = document.getElementById("code-send").value;
+    var inputCode = document.getElementById("input-code-confirm").value;
+    if(code != inputCode){
+      alert("Mã xác thực không chính xác. Vui lòng nhập lại");
+    }
+    else{
+      console.log("ok");
+      document.getElementById('confirm-button').setAttribute('style', 'display:none');
+    }
+  }
+
+  function checkVoucher() { 
+    var voucher = document.getElementById("voucher").value;
+    var data_post={
+      _csrf:_csrf,
+      voucher:voucher,
+    };
+    if(voucher){
+      $.ajax({
+      type: 'POST',
+      url: `${base_url}branchs/check-voucher`,
+      data: data_post,
+      dataType: 'json',
+      success: function(res) {
+      },
+      error: function(e) {
+            console.log(e);
+        }
+    });
+    }
+  }
+
+  function showTable() { 
+    document.querySelector(".popup1").classList.remove("display");
+  }
+  function addTable(){
+    var table_list = document.getElementsByClassName("table_list");
+    var slot1 = document.getElementById("submit-slot");
+    var slot2 = 0;
+    for(var table of table_list ){
+      if(table.checked == true){
+        var temp = table.value.replace('{',"");
+        temp = temp.replace('}',"");
+        temp = temp.split(',');
+        console.log(temp);
+        var obj = {};
+        temp.forEach(function(property) {
+            
+            var tup = property.split(':');
+            tup[0] = tup[0].slice(1);
+            tup[0] = tup[0].slice(0,-1);
+            tup[1] = tup[1].slice(1);
+            tup[1] = tup[1].slice(0,-1);
+            obj[tup[0]] = tup[1];
+        });
+        console.log(obj);
+        slot2 += parseInt(obj.slot);
+      }
+    }
+    slot1.innerHTML = '<p><strong>Số lượng chỗ:</strong>' + slot2 + '</p>';
+    console.log("1: ", slot2);
+    document.getElementById("slot").value = slot2;
+  }
+
+  function follow(){
+    var follow = document.getElementById("follow").className;
+    var _csrf = document.getElementById("_csrf").value;
+    var branch_id = document.getElementById("branch_id").value;
+    var user_id = document.getElementById("user_id").value;
+    var restaurant_id = document.getElementById("restaurant_id").value;
+    var data_post = {
+      _csrf:_csrf,
+      branch_id: branch_id,
+      user_id:user_id,
+      restaurant_id:restaurant_id
+    }
+    
+    if (follow == "fas fa-heart"){
+      document.getElementById("follow").className = "far fa-heart";
+      console.log(data_post);
+      $.ajax({
+        type: 'POST',
+        url: `${base_url}branchs/unfollow`,
+        data: data_post,
+        dataType: 'json',
+        success: function(res) {
+        },
+        error: function(e) {
+            console.log(e);
+        }
+    });
+    } 
+    else {
+      document.getElementById("follow").className = "fas fa-heart";
+      $.ajax({
+        type: 'POST',
+        url: `${base_url}branchs/follow`,
+        data: data_post,
+        dataType: 'json',
+        success: function(res) {
+        },
+        error: function(e) {
+            console.log(e);
+        }
+    });
+  }
+}
+</script>
+<script>
+  let map;
+
+  function initMap() {
+    map = new google.maps.Map(document.getElementById("map"), {
+      center: { lat:<%=branch.lat %>, lng:<%=branch.lng %> },
+      zoom: 18,
+    });
+    var marker = new google.maps.Marker({
+      position: { lat:<%=branch.lat %>, lng:<%=branch.lng %> },
+      map: map
+    });
+  }
+</script>

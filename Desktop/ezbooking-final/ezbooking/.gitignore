@@ -1,0 +1,14 @@
+## PhpStorm IDE Files
+/nbproject/
+.idea/*
+
+## Sublime IDE files
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+*.sublime-project
+
+## NodeJS modules file
+/node_modules
+/media

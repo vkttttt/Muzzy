@@ -1,0 +1,21 @@
+var express = require("express");
+
+var adminModel = require('../admin/models');
+
+var ##module_name## = express();
+
+##module_name##.set('views',_basepath+'app/views');
+
+//============================= LOAD RESOURCES ================================//
+adminModel.findAll('adminResources',{module:'##module_name##'}, 'name', {},function(result){
+    result.forEach(function(resource){
+        ##module_name##.use('/'+resource.name,helpers.admin.authAdmin, require('./routes/'+resource.name));
+    });
+});
+//============================= END RESOURCES =================================//
+
+##module_name##.get('/',function (req, res) {
+    res.send('##module_name## INDEX');
+});
+
+module.exports = ##module_name##;

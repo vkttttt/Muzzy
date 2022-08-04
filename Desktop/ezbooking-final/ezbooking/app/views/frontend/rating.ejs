@@ -1,0 +1,382 @@
+<% layout('../layout/default') %>
+
+<!------ Include the above in your HEAD tag ---------->
+
+<div class="ps-breadcrumb">
+    <div class="container">
+      <ul class="breadcrumb">
+        <li>
+            <a href="/ezbooking">
+                Home
+            </a>
+        </li>
+        <li>
+            <a>
+                Đánh giá nhà hàng
+            </a>
+        </li>
+      </ul>
+    </div>
+</div>
+
+<div class="page-section">
+    <div class="container__page">
+        <div class="page__title">
+            Lịch sử đặt bàn
+        </div>
+        <div class="history_wrap">
+            <div class="history__fillter">
+                <div>
+                    <select onchange="event.preventDefault(); getQueryLink()" id = "sort" class="form-control" data-placeholder="Sort Items">
+                    </select>
+                </div>
+                <div>
+                    <select onchange="event.preventDefault(); getQueryLink()" id = "status"  class="form-control" data-placeholder="Sort Items">
+                        <option value=''>Trạng thái</option>
+                    </select>
+                </div>                             
+            </div>
+            <div class="history__content">           
+                <table class="table__content">
+                    <tr>
+                        <th>STT</th>
+                        <th>Mã đơn hàng</th>
+                        <th>Thời gian</th>
+                        <th>Địa điểm</th>
+                        <th>Tổng tiền</th>
+                        <th>Trạng thái</th>
+                        <th>Chi tiết</th>
+                    </tr>
+                </table>             
+            </div>
+        </div>
+    </div>
+</div><!-- Page Section End -->
+
+<div class="popup2 modal-overlay">
+    <form id="form-book" name="forms" class="form-2" action="" method="POST" onsubmit="return myFunc()">
+        <div class="form-2-title">
+            <h2>Đánh giá về nhà hàng</h2>
+            <span><a href="<%=_baseUrl%>profile/orders"><i class="fa fa-times" aria-hidden="true"></i></a></span>
+        </div>
+        <% if(order){ %>
+        <div class="row">
+            <div class="col-xl-4 col-md-4 col-12 " style="border-bottom:1px solid #ddd;">  
+                <div class="form-2-area">
+                    <p style="font-size: 22px;color: coral;font-weight: bold;"><%=branch.name %></p>
+                    <div class="ps-product__thumbnail">
+                        <img src="<%=_staticUrl%><%=branch.thumbnail %>" alt="" />
+                    </div>
+                    <p><%=branch.address %></p>
+                </div>
+            </div>
+            <div class="col-xl-8 col-md-8 col-12">
+                <div class="form-2-wrap">
+                    <div class="form-2-left">
+                        <div>
+                            <p><strong>Khách hàng:</strong> <%=order.fullname%></p>
+                            <p><strong>Sđt:</strong> <%=order.phone%></p>
+                            <p><strong>Email:</strong> <%=order.email%></p>
+                            <p><strong>Số lượng chỗ:</strong> <%=order.slot%></p>
+                        </div>
+                        <div class="form_margin" style="margin-left:20px;">
+                            <p><strong>Trạng thái:</strong> Hoàn thành</p>
+                            <p><strong>Phí đặt chỗ:</strong> <%=order.booking_cost%></p>
+                            <p><strong>Thời gian:</strong> <%=order.time%></p>
+                        </div>
+                    </div>
+                    <div class="form-2-right">
+                        <form action="" method="POST">
+                            <input type="hidden" name="_csrf" value="<%= csrftoken %>">
+                            <input type="hidden" id="order" name="order" value="<%=order._id%>">
+                            <div class="row" style="margin-top:0px;">
+                                <div class="col-md-6 col-12">
+                                    <div class="form-2-top">
+                                        <textarea placeholder="Viết nhận xét của bạn tại đây" id="comment" name="comment" minlength="1" maxlength="200" required></textarea>
+                                    </div>
+                                    <div class="form-2-rating">
+                                        <p style="margin-bottom:0px;">Số sao:</p>
+                                        <div class="rating-star">
+                                            <input type="radio" name="rate" id="rate-5" value="5">
+                                            <label for="rate-5" class="fas fa-star"></label>
+                                            <input type="radio" name="rate" id="rate-4" value="4">
+                                            <label for="rate-4" class="fas fa-star"></label>
+                                            <input type="radio" name="rate" id="rate-3" value="3">
+                                            <label for="rate-3" class="fas fa-star"></label>
+                                            <input type="radio" name="rate" id="rate-2" value="2">
+                                            <label for="rate-2" class="fas fa-star"></label>
+                                            <input type="radio" name="rate" id="rate-1" value="1">
+                                            <label for="rate-1" class="fas fa-star"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="imgUploaded">
+                                        <img src="" id="preview" style="display: none;">
+                                        <input type="hidden" id="img_base64" name="img_base64" value="">
+                                        <div style="margin-right: 20px;">
+                                            <input class="inputfile" type="file" id="upload-1" style="display: none;">
+                                            <label class="btn btn-info btn-submit" for="upload-1">Chọn ảnh</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-2-bottom">
+                                <button class="btn btn-info btn-submit" type="submit">Đánh giá</button>
+                            </div>             
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% }; %>
+    </form>
+</div>
+
+<footer class="footer__default">
+    <div class="container">
+        <div class="ps-footer__widgets">
+            <div class="widget widget_footer widget_contact-us">
+                <h4 class="widget-title">Liên hệ</h4>
+                <div class="widget_content">
+                <p>Liên hệ với chúng tôi 24/7</p>
+                <h3>0965100798</h3>
+                <p>
+                351 Phú Thọ Hòa, Tân Phú, tp HCM<br />
+                <a href="#">contact@ezbooking.com</a>
+                </p>
+                <ul class="ps-list--social">
+                <li>
+                    <a class="facebook" href="#">
+                    <i class="fa fa-facebook"></i>
+                    </a>
+                </li>
+                <li>
+                    <a class="twitter" href="#">
+                    <i class="fa fa-twitter"></i>
+                    </a>
+                </li>
+                <li>
+                    <a class="google-plus" href="#">
+                    <i class="fa fa-google-plus"></i>
+                    </a>
+                </li>
+                <li>
+                    <a class="instagram" href="#">
+                    <i class="fa fa-instagram"></i>
+                    </a>
+                </li>
+                </ul>
+            </div>
+            </div>
+            <div class="widget widget_footer">
+                <h4 class="widget-title">Khám phá</h4>
+                <ul class="ps-list--link">
+                    
+                    <li>
+                    <a href="<%=_baseUrl%>collections">Bộ sưu tập</a>
+                    </li>
+                    <li>
+                    <a href="<%=_baseUrl%>branchs">Danh mục nhà hàng</a>
+                    </li>
+                    <li>
+                    <a href="<%=_baseUrl%>branchs">Nhà hàng mới</a>
+                    </li>
+                    <li>
+                    <a href="<%=_baseUrl%>branchs/hot">Nhà hàng nổi tiếng</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="widget widget_footer">
+                <h4 class="widget-title">Công ty</h4>
+                <ul class="ps-list--link">
+                    <li>
+                    <a href="#">Về chúng tôi</a>
+                    </li>
+                    <li>
+                    <a href="#">Chính sách liên kết</a>
+                    </li>
+                    <li>
+                    <a href="#">Chính sách sử dụng</a>
+                    </li>
+                    <li>
+                    <a href="#">Chính sách đảm bảo</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="widget widget_footer">
+                <h4 class="widget-title">Tiện ích</h4>
+                <ul class="ps-list--link">
+                    <li>
+                    <a href="<%=_baseUrl%>blogs">Bài viết</a>
+                    </li>
+                    <li>
+                    <a href="<%=_baseUrl%>register">Đăng ký</a>
+                    </li>
+                    <li>
+                    <a href="#">Tài khoản</a>
+                    </li>
+                    <li>
+                    <a href="#">Nhà hàng</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer__copyright">
+            <p>CopyRight &copy; EzBooking</p>
+        </div>
+    </div>
+  </footer>
+
+<style>
+.form-2 {
+  background-color: #f5f5f5;
+}
+.form-2-title {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #ddd;
+  background-color: #17a2b8;
+  color: #fff;
+  padding:10px 20px;
+}
+.form-2-title h2{
+    margin-bottom: 0 !important;
+}
+.form-2-title span {
+  display: flex;
+  align-items: center;
+}
+.form-2-title span i {
+  color: #fff;
+  cursor: pointer;
+  font-size: 20px;
+}
+.form-2-left {
+  background-color: #fff;
+  padding: 10px;
+  border: 5px;
+  height: 100%;
+  display: flex;
+  justify-content: start;
+  border-bottom: 1px solid #ddd;
+}
+.form-2-left p {
+  font-size: 17px;
+}
+.form-2-right {
+  background-color: #fff;
+  padding: 10px;
+  border: 5px;
+}
+.form-2-right .imgUploaded {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+.form-2-right .imgUploaded img {
+  width: 50%;
+  height: 100%;
+}
+.form-2-right .form-2-top textarea {
+  height: 100px;
+  width: 100%;
+}
+.form-2-right .form-2-bottom {
+  padding-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.form-2-right .form-2-rating {
+  padding-top: 10px;
+  display: flex;
+  align-items: center;
+}
+.form-2-area {
+  padding: 10px;
+  background-color: #fff;
+  height: 100%;
+}
+.form-2-area .ps-product__thumbnail {
+  margin-bottom: 1rem;
+}
+.form-2-area .ps-product__thumbnail img {
+  width: 100%;
+}
+.form-2-area .form-2-info {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+.rating-star{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row-reverse;
+}
+.rating-star input{
+    display: none;
+}
+.rating-star label{
+    font-size: 20px;
+    color:#444;
+    padding:5px;
+    float: left;
+    transition: all 0.2s ease;
+}
+input:not(:checked) ~ label:hover,input:not(:checked) ~ label:hover ~ label{
+    color:#fd4;
+}
+input:checked ~ label{
+    color: #fd4;
+}
+</style>
+
+<script type="text/javascript">
+    window.addEventListener('DOMContentLoaded', function () {
+        var uploads = document.querySelectorAll('input[type=file]');
+        for (var i = 0; i < uploads.length; i++) {
+            uploads[i].addEventListener('change', function (e) {
+                var files = e.target.files;
+                var file_data = files[0];
+
+                e.target.value = '';
+                if(file_data.type != 'image/jpeg' && file_data.type != 'image/png'){
+                    Admin.loading_show('Only accept png or jpeg',1);return false;
+                }
+
+                //8MB
+                if(file_data.size > 8000000){
+                    Admin.loading_show('File maximum 12M',1);return false;
+                }
+
+                var reader = new FileReader();
+                reader.readAsDataURL(file_data);
+                reader.onload = function (el) {
+                    var image = document.getElementById('preview');
+                    image.src = reader.result;
+                    var img_base64 = document.getElementById('img_base64');
+                    img_base64.value = image.src;
+                    $('#preview').show();
+                };
+            });
+        }
+    });
+
+</script>
+
+<script>
+    function myFunc(){
+        var a = document.forms.rate;
+        for(i=0;i<a.length;i++){
+            if(a[i].checked == true){
+                return true;
+            }
+        }
+        alert("Bạn chưa chọn số sao đánh giá")
+        return false;
+    }
+</script>

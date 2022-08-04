@@ -1,0 +1,376 @@
+<% layout('../layout/default'); %>
+<!-- Content Header (Page header) -->
+
+<link href="<%=_staticUrl%>public/admin/css/cropper.css" rel="stylesheet" type="text/css">
+<script src="<%=_staticUrl%>public/admin/js/cropper.js"></script>
+
+<!-- AdminLTE Skins -->
+<link rel="stylesheet" href="<%=publicUrl%>admin/css/skins/_all-skins.min.css">
+<!-- Date Picker -->
+<link rel="stylesheet" href="<%=publicUrl%>admin/css/datetimepicker/datetimepicker.css">
+
+<div class="ps-breadcrumb">
+    <div class="container">
+      <ul class="breadcrumb">
+        <li>
+            <a href="/ezbooking">
+                Home
+            </a>
+        </li>
+        <li>
+            <a>
+                Thông tin khách hàng
+            </a>
+        </li>
+      </ul>
+    </div>
+</div>
+
+<div class="page-section">
+    <div class="container">
+        <div class="row mbn-30" style="border:1px solid #ddd">
+            <!-- My Account Tab Menu Start -->
+            <div class="col-lg-3 col-md-4 col-12 left" style="border-right:1px solid #ddd;background-color: #fff;">
+                <div class="myaccount-avatar">
+                    <div class="avatar-img">
+                        <% var new_avatar = helpers.admin.get_query_data(data_edit,'new_avatar'); %>
+                        <% if(new_avatar){%>
+                            <img src="<%=_staticUrl%><%=new_avatar%>">
+                        <%}else{%>
+                            <img src="<%=_staticUrl%><%=helpers.admin.get_query_data(data_edit,'avatar')%>">
+                        <%}%>
+                    </div>
+                    <div class="avatar-name"><%=helpers.ezbooking.get_query_data(data_edit,'fullname')%></div>
+                </div>
+                <div class="myaccount-tab-menu">
+                    <a href="#" class="active"><i class="fa fa-address-card" aria-hidden="true"></i>
+                        Thông tin khách hàng</a>
+
+                    <a href="<%=_baseUrl%>logout"><i class="fa fa-sign-out"></i>Đăng xuất</a>
+                </div>
+            </div>
+            <!-- My Account Tab Menu End -->
+
+            <!-- My Account Tab Content Start -->
+            <div class="col-lg-9 col-md-8 col-12 right">
+                <div class="tab-content">
+                    <!-- Single Tab Content Start -->
+                    <div class="tab-pane show active">
+                        <form class="form-horizontal" id="FormAdd" method="post" autocomplete="off">
+                            <input type="hidden" name="_csrf" value="<%= csrftoken %>">
+                            <div class="row">
+                                <div class="col-lg-9 col-12">
+                                    <h4>Thông tin khách hàng</h4>
+                                    <div class="tab-form">
+                                        <div class="row">
+                                            <div class="col-lg-6 col-12">
+                                                <label>Họ và Tên:<span>*</span></label>
+                                                <input type="text" class="form-control medium" name="fullname" value="<%=helpers.ezbooking.get_query_data(data_edit,'fullname')%>" />
+                                            </div>
+                                            <div class="col-lg-6 col-12">
+                                                <label>Số điện thoại:<span>*</span></label>
+                                                <input type="text" class="form-control medium" name="phone" value="<%=helpers.ezbooking.get_query_data(data_edit,'phone')%>" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-form">
+                                        <label>Email:<span>*</span></label>
+                                        <input type="text" class="form-control medium" name="email" value="<%=helpers.ezbooking.get_query_data(data_edit,'email')%>" />
+                                    </div>
+                                    <div class="tab-form">
+                                        <div class="row">
+                                            <div class="col-lg-6 col-12">
+                                                <label>Ngày/tháng/năm sinh<span>*</span></label>
+                                                <input type="date" class="form-control medium" name="birth_day" value="<%=helpers.ezbooking.get_query_data(data_edit,'birth_day')%>" />
+                                            </div>
+                                            <div class="col-lg-6 col-12">
+                                                <label>Giới tính<span>*</span></label>
+                                                <select class="form-control medium" style="height: 50px;" name="gender" value="<%=helpers.ezbooking.get_query_data(data_edit,'gender')%>">
+                                                    <option>Nam</option>
+                                                    <option>Nữ</option>
+                                                    <option>Khác</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-form">
+                                        <label>Địa chỉ:<span>*</span></label>
+                                        <input type="text" class="form-control medium" name="address" value="<%=helpers.ezbooking.get_query_data(data_edit,'address')%>" />
+                                    </div>         
+                                    <div class="tab-form">
+                                        <div class="checkbox">
+                                            <input id="checkbox_update_password" onchange="handleChange(this);" class="styled" type="checkbox" name="update_password" value="1">
+                                            <label for="checkbox_update_password">Thay đổi mật khẩu</label>
+                                        </div>
+                                        <div id="update-pass" style="display: none">
+                                            <br>
+                                            <input type="password" placeholder="Mật khẩu cũ" name="old_password" id="old_password" class="form-control medium" autocomplete="off" />
+                                            <br>
+                                            <input type="password" placeholder="Mật khẩu mới" name="new_password" id="new_password" class="form-control medium" autocomplete="off"/>
+                                            <br>
+                                            <input type="password" placeholder="Xác nhận mật khẩu" name="retype_password" id="retype_password" class="form-control medium" autocomplete="off"/>
+                                        </div>
+                                    </div>
+                                    <div class="tab-form btn--submit">
+                                        <button type="submit" class="btn btn-info btn-submit">Cập nhật thay đổi</button>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-12">
+                                    <div class="upload-large">
+                                        <% var new_avatar = helpers.admin.get_query_data(data_edit,'new_avatar'); %>
+                                        <% if(new_avatar){%>
+                                            <img src="<%=new_avatar%>" id="preview">
+                                        <%}else{%>
+                                            <img src="<%=_staticUrl%><%=helpers.admin.get_query_data(data_edit,'avatar')%>" id="preview">
+                                        <%}%>
+                                        <input type="hidden" name="avatar" value="<%=helpers.admin.get_query_data(data_edit,'avatar')%>">
+                                        <input type="hidden" name="new_avatar" value="<%=new_avatar%>">
+                                        <div class="inputfile-container" style="margin-top: 3px">
+                                            <input class="inputfile" type="file" id="upload-1" style="display:none;">
+                                            <label class="btn btn-info btn-submit" for="upload-1" style="display: flex;justify-content: center;">Chọn ảnh</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>                      
+                    </div>
+                    <!-- Single Tab Content End -->
+                </div>
+            </div>
+            <!-- My Account Tab Content End -->
+        </div>
+    </div>
+</div><!-- Page Section End -->
+
+<div class="modal" id="modal-upload" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Chỉnh sửa ảnh</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+            </div>
+            <div class="modal-body" style="margin: auto;">
+                <div class="crop-container">
+                    <img id="image-crop" src="" style="display: none;">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary btn--m" id="crop_btn" type="button">Lưu ảnh</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    window.addEventListener('DOMContentLoaded', function () {
+        var cropper_c = null;
+        var crop_btn = document.getElementById('crop_btn');
+        var uploads = document.querySelectorAll('input[type=file]');
+        for (var i = 0; i < uploads.length; i++) {
+            uploads[i].addEventListener('change', function (e) {
+                var files = e.target.files;
+                var file_data = files[0];
+
+                e.target.value = '';
+                if(file_data.type != 'image/jpeg' && file_data.type != 'image/png'){
+                    Admin.loading_show('Only accept png or jpeg',1);return false;
+                }
+
+                //8MB
+                if(file_data.size > 12000000){
+                    Admin.loading_show('File maximum 12M',1);return false;
+                }
+
+                var reader = new FileReader();
+                reader.readAsDataURL(file_data);
+                reader.onload = function (el) {
+                    var image = document.getElementById('image-crop');
+                    image.src = reader.result;
+                    image.onload = function(){
+                        $("#modal-upload").modal("show");
+                        if(cropper_c != null){
+                            cropper_c.destroy();
+                        }
+
+                        var con_w = $('#modal-upload').find('.modal-body').width();
+                        $('.crop-container').css({"width": con_w});
+                        cropper_c = new Cropper(image, {
+                            modal: true,
+                            center: false,
+                            background: false,
+                            rotatable : true,
+                            dragMode:'move',
+                            aspectRatio: 1,
+                            viewMode: 2,
+                            responsive:true,
+                            checkOrientation:true,
+                            movable:true,
+                            zoomable:true,
+                            zoomOnTouch:true,
+                            cropBoxResizable:true,
+                            highlight:false,
+                            guides:false,
+                            minContainerWidth: con_w,
+                            minContainerHeight: con_w,
+                            minCropBoxWidth: 200,
+                            maxCropBoxWidth:200
+                        });
+                    };
+                };
+            });
+        }
+
+        crop_btn.addEventListener('click',function(e){
+            $(this).attr('disabled','disabled');
+            if(cropper_c == null){
+                return;
+            }
+
+            var canvas;
+
+            var ImageRootData = cropper_c.getImageData();
+            var ImageCropData = cropper_c.getData();
+            ImageCropData.naturalWidth = ImageRootData.naturalWidth;
+            ImageCropData.naturalHeight = ImageRootData.naturalHeight;
+
+            canvas = cropper_c.getCroppedCanvas({
+                width: ImageCropData.width,
+                height: ImageCropData.height
+            });
+            resizedataURL(canvas.toDataURL(),200,200);
+        });
+
+        function resizedataURL(data, wantedWidth, wantedHeight){
+            var img = new Image(wantedWidth,wantedHeight);
+            img.src = data;
+            img.onload = function() {
+                var canvas = document.createElement('canvas');
+                canvas.width = wantedWidth;
+                canvas.height = wantedHeight;
+
+                var ctx = canvas.getContext('2d');
+                ctx.webkitImageSmoothingEnabled = false;
+                ctx.mozImageSmoothingEnabled = false;
+                ctx.imageSmoothingEnabled = false;
+                ctx.imageSmoothingQuality = "high";
+                ctx.drawImage(this, 0, 0, wantedWidth, wantedHeight);
+
+                var avatar = document.getElementById('preview');
+                avatar.src = canvas.toDataURL();
+                avatar.onload = function(){
+                    $("#modal-upload").modal("hide");
+                    crop_btn.removeAttribute('disabled');
+                };
+                $('input[name="new_avatar"]').val(canvas.toDataURL('image/jpeg', 1.0));
+            };
+        }
+    });
+
+    function handleChange(checkbox){
+        if(checkbox.checked == true){
+            document.getElementById("update-pass").style.display = "block";
+        }else{
+            document.getElementById("update-pass").style.display = "none";
+        }
+    }
+</script>
+
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script type="text/javascript">
+    $.widget.bridge('uibutton', $.ui.button);
+</script>
+
+<footer class="footer__default">
+    <div class="container">
+        <div class="ps-footer__widgets">
+            <div class="widget widget_footer widget_contact-us">
+                <h4 class="widget-title">Liên hệ</h4>
+                <div class="widget_content">
+                <p>Liên hệ với chúng tôi 24/7</p>
+                <h3>0965100798</h3>
+                <p>
+                351 Phú Thọ Hòa, Tân Phú, tp HCM<br />
+                <a href="#">contact@ezbooking.com</a>
+                </p>
+                <ul class="ps-list--social">
+                <li>
+                    <a class="facebook" href="#">
+                    <i class="fa fa-facebook"></i>
+                    </a>
+                </li>
+                <li>
+                    <a class="twitter" href="#">
+                    <i class="fa fa-twitter"></i>
+                    </a>
+                </li>
+                <li>
+                    <a class="google-plus" href="#">
+                    <i class="fa fa-google-plus"></i>
+                    </a>
+                </li>
+                <li>
+                    <a class="instagram" href="#">
+                    <i class="fa fa-instagram"></i>
+                    </a>
+                </li>
+                </ul>
+            </div>
+            </div>
+            <div class="widget widget_footer">
+                <h4 class="widget-title">Khám phá</h4>
+                <ul class="ps-list--link">
+                    
+                    <li>
+                    <a href="<%=_baseUrl%>collections">Bộ sưu tập</a>
+                    </li>
+                    <li>
+                    <a href="<%=_baseUrl%>branchs">Danh mục nhà hàng</a>
+                    </li>
+                    <li>
+                    <a href="<%=_baseUrl%>branchs">Nhà hàng mới</a>
+                    </li>
+                    <li>
+                    <a href="<%=_baseUrl%>branchs/hot">Nhà hàng nổi tiếng</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="widget widget_footer">
+                <h4 class="widget-title">Công ty</h4>
+                <ul class="ps-list--link">
+                    <li>
+                    <a href="#">Về chúng tôi</a>
+                    </li>
+                    <li>
+                    <a href="#">Chính sách liên kết</a>
+                    </li>
+                    <li>
+                    <a href="#">Chính sách sử dụng</a>
+                    </li>
+                    <li>
+                    <a href="#">Chính sách đảm bảo</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="widget widget_footer">
+                <h4 class="widget-title">Tiện ích</h4>
+                <ul class="ps-list--link">
+                    <li>
+                    <a href="<%=_baseUrl%>blogs">Bài viết</a>
+                    </li>
+                    <li>
+                    <a href="<%=_baseUrl%>register">Đăng ký</a>
+                    </li>
+                    <li>
+                    <a href="#">Tài khoản</a>
+                    </li>
+                    <li>
+                    <a href="#">Nhà hàng</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer__copyright">
+            <p>CopyRight &copy; EzBooking</p>
+        </div>
+    </div>
+  </footer>

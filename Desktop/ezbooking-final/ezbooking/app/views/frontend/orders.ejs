@@ -1,0 +1,438 @@
+<% layout('../layout/default') %>
+
+<!------ Include the above in your HEAD tag ---------->
+
+<div class="ps-breadcrumb">
+    <div class="container">
+      <ul class="breadcrumb">
+        <li>
+            <a href="/ezbooking">
+                Home
+            </a>
+        </li>
+        <li>
+            <a>
+                Lịch sử đặt bàn
+            </a>
+        </li>
+      </ul>
+    </div>
+</div>
+
+
+
+<div class="page-section collection_pc">
+    <div class="container__page">
+        <div class="page__title">
+            Lịch sử đặt bàn
+        </div>
+        <div class="history_wrap">
+            <div class="history__fillter">
+                <div>
+                    <select onchange="event.preventDefault(); getQueryLink()" id = "sort" class="form-control" data-placeholder="Sort Items">
+                        <option <% if(sort == -1){%> selected <%}%> value = -1>Mới nhất</option>
+                        <option <% if(sort == 1){%> selected <%}%> value = 1>Cũ nhất</option>
+                    </select>
+                </div>
+                <div>
+                    <select onchange="event.preventDefault(); getQueryLink()" id = "status"  class="form-control" data-placeholder="Sort Items">
+                        <option value=''>Trạng thái</option>
+                        <option <% if(status == 0){%> selected <%}%> value = 0 >Đang xử lý</option>
+                        <option <% if(status == 1){%> selected <%}%> value = 1 >Thành công</option>
+                        <option <% if(status == 2){%> selected <%}%> value = 2 >Thất bại</option>
+                        <option <% if(status == 3){%> selected <%}%> value = 3 >Đã hủy</option>
+                        <option <% if(status == 4){%> selected <%}%> value = 4 >Hoàn thành</option>
+                    </select>
+                </div>                             
+            </div>
+            <div class="history__content">           
+                <table class="table__content">
+                    <tr>
+                        <th>STT</th>
+                        <th>Mã đơn hàng</th>
+                        <th>Thời gian</th>
+                        <th>Địa điểm</th>
+                        <th>Tổng tiền</th>
+                        <th>Trạng thái</th>
+                        <th>Chi tiết</th>
+                    </tr>
+                    <% if(ez_bookingdata){ %>
+                        <% var count = 0 %>
+                        <% ez_bookingdata.forEach(function(order){ %>
+                            <% if(order){ %>
+                                <tr>
+                                    <td><%=count += 1%></td>
+                                    <td><%=order._id%></td>
+                                    <td>
+                                        <div class="table__time">
+                                            <span>Thời gian đặt: <%=order.createdAt.toISOString()%></span>
+                                            <span>Thời gian đến: <%=order.time%></span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="table__adress">
+                                            <p style="font-weight: 700;"><%=order.branch.name%></p> 
+                                            <p style="font-size: 14px;"><%=order.branch.address%></p> 
+                                        </div>
+                                    </td>
+                                    <td><%=order.booking_cost%></td>
+                                    <td>
+                                        <% if(order.status == 0) {%>
+                                            <p style="color:#000"><strong><%=order.sstatus%></strong></p>
+                                        <% } else if(order.status == 1) {%>
+                                            <p style="color:greenyellow"><strong><%=order.sstatus%></strong></p>
+                                        <% } else if(order.status == 2) {%>
+                                            <p style="color: rgba(255, 187, 0, 0.863);"><strong><%=order.sstatus%></strong></p>
+                                        <% } else if(order.status == 3) {%>
+                                            <p style="color: red;"><strong><%=order.sstatus%></strong></p>
+                                        <% } else if(order.status == 4) {%>
+                                            <p style="color: green;"><strong><%=order.sstatus%></strong></p>
+                                        <% } %>
+                                    </td>
+                                    <td>
+                                        <div class="table__detail">
+                                            <a href ="<%=_baseUrl%>profile/orders/<%=order._id%>">Chi tiết</a>
+                                            <% if(order.allow_cancel == true && order.status == 1) { %>
+                                            <input type="hidden" id ="_csrf" name="_csrf" value="<%= csrftoken %>">
+                                            <input type="hidden" id ="order_id" name="order_id" value="<%=order._id%>">
+                                            <a href ="" id ="cancel" style ="color: red;">Hủy đơn</a>
+                                            <%}%>
+                                            <% if(order.is_rating == false && order.status == 4) {%>
+                                                <a href="<%=_baseUrl%>profile/orders/rating/<%=order._id%>">Đánh giá</a>
+                                            <% }%>
+                                            <% if(order.is_paid == false && order.booking_cost != 0 && order.status == 0) {%>
+                                                <form action="<%=_baseUrl%>payment/paypal" method="post">
+                                                    <input type="hidden" id="_csrf" name="_csrf" value="<%= csrftoken %>">
+                                                    <input type="hidden" id="name" name="name" value="<%=order.branchname%>">
+                                                    <input type="hidden" id="price" name="price" value="<%=order.booking_cost%>">
+                                                    <input type="hidden" id="order_id" name="order_id" value="<%=order._id%>">
+                                                    <input type="hidden" id="branch_id" name="branch_id" value="<%=order.branch_id%>">
+                                                    <input type="submit" class="btn btn-success btn-info" id="paypal" value="Thanh toán online"> 
+                                                </form>
+                                            <% } %>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% }; %>
+                        <% }); %>
+                    <% }; %>
+                </table>             
+            </div>
+        </div>
+    </div>
+</div><!-- Page Section End -->
+
+<div class="page-section collection_mobi">
+    <div class="container"> 
+        <div class="row mbn-30" style="border:1px solid #ddd">
+            <!-- My Account Tab Menu Start -->
+            <div class="col-lg-3 col-md-4 col-12 left" style="border-right:1px solid #ddd;background-color: #fff;">
+                <div class="myaccount-avatar">
+                    <div class="avatar-img">
+                        <img src="<%=_staticUrl%><%=avatar%>">
+                    </div>
+                    <div class="avatar-name"><%=fullname%></div>
+                </div>
+                <div class="myaccount-tab-menu nav">
+                    <a href="<%=_baseUrl%>profile"><i class="fa fa-address-card" aria-hidden="true"></i>
+                        Thông tin khách hàng</a>
+
+                    <a href="#" class="active"><i class="fa fa-history" aria-hidden="true"></i>Lịch sử đặt bàn</a>
+
+                    <a href="<%=_baseUrl%>logout"><i class="fa fa-sign-out"></i>Đăng xuất</a>
+                </div>
+            </div>
+            <!-- My Account Tab Menu End -->
+
+            <!-- My Account Tab Content Start -->
+            <div class="col-lg-9 col-md-8 col-12 right">
+                <div class="tab-content">
+                    <!-- Single Tab Content Start -->
+                    <div class="tab-pane show active">
+                        <div>
+                            <h3>Lịch sử đặt bàn</h3>
+                        </div>
+                        <div class="tab-wrap">
+                            <div class="ps-block--vendor-filter">
+                                <div>
+                                    <select onchange="event.preventDefault(); getQueryLink()" id = "sort" class="form-control" data-placeholder="Sort Items">
+                                        <option <% if(sort == -1){%> selected <%}%> value = -1>Mới nhất</option>
+                                        <option <% if(sort == 1){%> selected <%}%> value = 1>Cũ nhất</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <select onchange="event.preventDefault(); getQueryLink()" id = "status"  class="form-control" data-placeholder="Sort Items">
+                                        <option value=''>Trạng thái</option>
+                                        <option <% if(status == 0){%> selected <%}%> value = 0 >Đang xử lý</option>
+                                        <option <% if(status == 1){%> selected <%}%> value = 1 >Thành công</option>
+                                        <option <% if(status == 2){%> selected <%}%> value = 2 >Thất bại</option>
+                                        <option <% if(status == 3){%> selected <%}%> value = 3 >Đã hủy</option>
+                                        <option <% if(status == 4){%> selected <%}%> value = 4 >Hoàn thành</option>
+                                    </select>
+                                </div>                             
+                            </div>
+                            <% if(ez_bookingdata){ %>
+                                <% ez_bookingdata.forEach(function(order){ %>
+                                    <% if(order){ %>
+                                        <div class="tab-display">
+                                            <div class="tab-item">
+                                                <div class="item-left">
+                                                    <p style="font-size: 20px;"><strong>Nhà hàng: <%=order.branchname%></strong></p>
+                                                    <p><strong>Mã ĐH:</strong> <%=order._id%></p>
+                                                    <p><strong>Phí đặt chỗ:</strong> <%=order.booking_cost%></p>
+                                                    <div class="item-content">
+                                                        <a href ="<%=_baseUrl%>profile/orders/<%=order._id%>" class="btn btn-submit btn-info">Chi tiết</a>
+                                                        <% if(order.allow_cancel == true && order.status == 1) { %>
+                                                        <input type="hidden" id ="_csrf" name="_csrf" value="<%= csrftoken %>">
+                                                        <input type="hidden" id ="order_id" name="order_id" value="<%=order._id%>">
+                                                        <a href ="" id ="cancel" class="btn btn-submit btn-info" style ="background-color:rgba(207, 67, 67, 0.89); margin-left:2px; ">Hủy đơn</a>
+                                                        <%}%>
+                                                        <% if(order.is_rating == false && order.status == 4) {%>
+                                                            <a href="<%=_baseUrl%>profile/orders/rating/<%=order._id%>" class="btn btn-submit btn-info" style="margin-left:20px;">Đánh giá</a>
+                                                        <% }%>
+                                                        <% if(order.is_paid == false && order.booking_cost != 0 && order.status == 0) {%>
+                                                            <form action="<%=_baseUrl%>payment/paypal" method="post">
+                                                                <input type="hidden" id="_csrf" name="_csrf" value="<%= csrftoken %>">
+                                                                <input type="hidden" id="name" name="name" value="<%=order.branchname%>">
+                                                                <input type="hidden" id="price" name="price" value="<%=order.booking_cost%>">
+                                                                <input type="hidden" id="order_id" name="order_id" value="<%=order._id%>">
+                                                                <input type="hidden" id="branch_id" name="branch_id" value="<%=order.branch_id%>">
+                                                                <input type="submit" class="btn btn-info btn-submit" id="paypal" value="Thanh toán qua paypal"> 
+                                                            </form>
+                                                        <% } %>
+                                                    </div>
+                                                </div>
+                                                <div class="item-right">
+                                                    <p style="text-align: end;"><strong><%=order.time%></strong></p>
+                                                    <% if(order.status == 0) {%>
+                                                        <p style="text-align: end;color:#000"><strong><%=order.sstatus%></strong></p>
+                                                    <% } else if(order.status == 1) {%>
+                                                        <p style="text-align: end;color:greenyellow"><strong><%=order.sstatus%></strong></p>
+                                                    <% } else if(order.status == 2) {%>
+                                                        <p style="text-align: end;color: rgba(255, 187, 0, 0.863);"><strong><%=order.sstatus%></strong></p>
+                                                    <% } else if(order.status == 3) {%>
+                                                        <p style="text-align: end;color: red;"><strong><%=order.sstatus%></strong></p>
+                                                    <% } else if(order.status == 4) {%>
+                                                        <p style="text-align: end;color: green;"><strong><%=order.sstatus%></strong></p>
+                                                    <% } %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <%} else {%>
+                                        <p>Bạn không có lịch sử đặt bàn</p>
+                                    <% }; %>
+                                <% }); %>
+                            <% }; %>
+                            <div class="button_show-more" style="display: flex;justify-content: center;align-items: center;">
+                                <button class="btn btn-info btn-submit view-more">Xem thêm</button>
+                            </div>
+                        </div>                                 
+                    </div>
+                    <!-- Single Tab Content End -->
+                </div>
+            </div>
+            <!-- My Account Tab Content End -->
+        </div>
+    </div>
+</div><!-- Page Section End -->
+
+<% if(ez_bookingdata){ %>
+    <% ez_bookingdata.forEach(function(order){ %>
+        <% if(order){ %>
+            <% if(order.is_paid == false && order.booking_cost != 0 && order.status == 0) {%>
+                <div class="modal-overlay">
+                    <div class="popup-pay">
+                        <h4>Vui lòng thanh toán tiền đặt chỗ trước cho đơn đặt bàn mới nhất của bạn.</h4>
+                        <div class="btn btn-info btn-submit" id="back1">Đã hiểu</div>
+                    </div>
+                </div>
+            <% } %>
+        <% }; %>
+    <% }); %>
+<% }; %>
+<footer class="footer__default">
+    <div class="container">
+        <div class="ps-footer__widgets">
+            <div class="widget widget_footer widget_contact-us">
+                <h4 class="widget-title">Liên hệ</h4>
+                <div class="widget_content">
+                <p>Liên hệ với chúng tôi 24/7</p>
+                <h3>0965100798</h3>
+                <p>
+                351 Phú Thọ Hòa, Tân Phú, tp HCM<br />
+                <a href="#">contact@ezbooking.com</a>
+                </p>
+                <ul class="ps-list--social">
+                <li>
+                    <a class="facebook" href="#">
+                    <i class="fa fa-facebook"></i>
+                    </a>
+                </li>
+                <li>
+                    <a class="twitter" href="#">
+                    <i class="fa fa-twitter"></i>
+                    </a>
+                </li>
+                <li>
+                    <a class="google-plus" href="#">
+                    <i class="fa fa-google-plus"></i>
+                    </a>
+                </li>
+                <li>
+                    <a class="instagram" href="#">
+                    <i class="fa fa-instagram"></i>
+                    </a>
+                </li>
+                </ul>
+            </div>
+            </div>
+            <div class="widget widget_footer">
+                <h4 class="widget-title">Khám phá</h4>
+                <ul class="ps-list--link">
+                    
+                    <li>
+                    <a href="<%=_baseUrl%>collections">Bộ sưu tập</a>
+                    </li>
+                    <li>
+                    <a href="<%=_baseUrl%>branchs">Danh mục nhà hàng</a>
+                    </li>
+                    <li>
+                    <a href="<%=_baseUrl%>branchs">Nhà hàng mới</a>
+                    </li>
+                    <li>
+                    <a href="<%=_baseUrl%>branchs/hot">Nhà hàng nổi tiếng</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="widget widget_footer">
+                <h4 class="widget-title">Công ty</h4>
+                <ul class="ps-list--link">
+                    <li>
+                    <a href="#">Về chúng tôi</a>
+                    </li>
+                    <li>
+                    <a href="#">Chính sách liên kết</a>
+                    </li>
+                    <li>
+                    <a href="#">Chính sách sử dụng</a>
+                    </li>
+                    <li>
+                    <a href="#">Chính sách đảm bảo</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="widget widget_footer">
+                <h4 class="widget-title">Tiện ích</h4>
+                <ul class="ps-list--link">
+                    <li>
+                    <a href="<%=_baseUrl%>blogs">Bài viết</a>
+                    </li>
+                    <li>
+                    <a href="<%=_baseUrl%>register">Đăng ký</a>
+                    </li>
+                    <li>
+                    <a href="#">Tài khoản</a>
+                    </li>
+                    <li>
+                    <a href="#">Nhà hàng</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer__copyright">
+            <p>CopyRight &copy; EzBooking</p>
+        </div>
+    </div>
+  </footer>
+
+<style>
+    .modal-overlay{
+        display: block;
+    }
+    .popup-pay{
+        position: relative;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 100;
+        width: 100%;
+        max-width: 500px;
+        background-color: #f5f5f5;
+        padding: 20px;
+    }
+    #back1{
+        display: flex;
+        justify-content: center;
+    }
+</style>
+<script>
+    $("#back1").click(function(){
+      $(".modal-overlay").css("display","none");
+    });
+</script>
+
+<script>
+    $(".tab-display").slice(0,3).show();
+    $(".view-more").on("click", function(){
+        $(".tab-display:hidden").slice(0,3).slideDown();
+        if($(".tab-display:hidden").length == 0){
+            $(".view-more").fadeOut('slow')
+        }
+    });
+</script>
+
+
+
+<script>
+    $('#cancel').click(function(){
+        console.log("cancel");
+        var _csrf = document.getElementById("_csrf").value;
+        var order_id = document.getElementById("order_id").value;
+        let data_post = {
+            _csrf:_csrf,
+        }
+        console.log(_csrf);
+        $.ajax({
+            type: 'POST',
+            url: `${base_url}profile/orders/cancel/${order_id}`,
+            data: data_post,
+            dataType: 'json',
+            success: function (response) {
+                if (response && response.status == 200) {
+                    console.log(url);
+                } else if (response && response.status == 400) {
+                } else {
+                }
+            },
+            error: function () {
+            },
+        });
+    });
+</script>
+
+<script>
+    function getQueryLink(){
+        console.log('getQueryLink');
+        var status = document.getElementById("status").value;
+        var sort = document.getElementById("sort").value;
+        var query_link = `${base_url}profile/orders?`;
+
+        if(status){
+            if(!sort){
+                query_link += `status=${status}`;
+            }
+            else{
+                query_link += `&status=${status}`;
+            }
+        }
+        if(sort){
+            if(!status){
+                query_link += `sort=${sort}`;
+            }
+            else{
+                query_link += `&sort=${sort}`;
+            }
+        }
+        window.location.href = query_link;
+    }
+</script>
